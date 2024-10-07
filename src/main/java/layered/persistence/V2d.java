@@ -1,4 +1,4 @@
-package layered.business;
+package layered.persistence;
 
 public class V2d implements java.io.Serializable {
 
