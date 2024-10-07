@@ -1,4 +1,4 @@
-package layered.persistence;
+package layered.business;
 
 public class V2d implements java.io.Serializable {
 
@@ -8,7 +8,6 @@ public class V2d implements java.io.Serializable {
         this.x = x;
         this.y = y;
     }
-
 
     public double x() {
     	return x;

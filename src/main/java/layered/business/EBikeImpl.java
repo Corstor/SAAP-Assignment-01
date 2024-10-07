@@ -1,4 +1,4 @@
-package layered.persistence;
+package layered.business;
 
 public class EBikeImpl implements EBike {
     private String id;

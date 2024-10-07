@@ -1,4 +1,4 @@
-package layered.persistence;
+package layered.business;
 
 public class UserImpl implements User {
 
