@@ -6,10 +6,10 @@ public interface EBike {
     int getBatteryLevel();
     double getSpeed();
     V2d getDirection();
-    P2d getPosition();
+    P2d getLocation();
     
     void rechargeBattery();
-    void decreaseBattery(int delta);
+    void decreaseBatteryLevel(int delta);
     boolean isAvailable();
 
     void updateState(EBikeState state);

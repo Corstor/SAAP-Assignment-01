@@ -23,6 +23,9 @@ public class UserImpl implements User {
     @Override
     public void decreaseCredit(final int amount) {
         this.credit -= amount;
+        if (this.credit < 0) {
+            this.credit = 0;
+        }
     }
 
     @Override
