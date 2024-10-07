@@ -1,4 +1,4 @@
-package sap.ass01.bbom;
+package layered.persistence;
 
 public class User {
 
@@ -32,6 +32,4 @@ public class User {
 	public String toString() {
 		return "{ id: " + id + ", credit: " + credit + " }";
 	}
-
-	
 }

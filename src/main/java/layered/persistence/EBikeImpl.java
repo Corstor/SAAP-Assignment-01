@@ -1,18 +1,14 @@
-package sap.ass01.bbom;
+package layered.persistence;
 
-import java.util.Optional;
-
-public class EBike  {
-
-	private String id;
-	public enum EBikeState { AVAILABLE, IN_USE, MAINTENANCE}	
+public class EBikeImpl implements EBike {
+    private String id;
 	private EBikeState state;
 	private P2d loc;
 	private V2d direction; 
 	private double speed;
 	private int batteryLevel;  /* 0..100 */
 	
-	public EBike(String id) {
+	public EBikeImpl(String id) {
 		this.id = id;
 		this.state = EBikeState.AVAILABLE;
 		this.loc = new P2d(0,0);
@@ -44,7 +40,6 @@ public class EBike  {
 			state = EBikeState.MAINTENANCE;
 		}
 	}
-
 	
 	public boolean isAvailable() {
 		return state.equals(EBikeState.AVAILABLE);
@@ -81,5 +76,4 @@ public class EBike  {
 	public String toString() {
 		return "{ id: " + id + ", loc: " + loc + ", batteryLevel: " + batteryLevel + ", state: " + state + " }";
 	}
-	
 }
