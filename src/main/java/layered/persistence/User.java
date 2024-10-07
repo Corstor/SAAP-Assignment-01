@@ -1,35 +1,12 @@
 package layered.persistence;
 
-public class User {
-
-	private String id;
-	private int credit;
+public interface User {
+    
+	String getId();
 	
-	public User(String id) {
-		this.id = id;
-		this.credit = 0;
-	}
+	int getCredit();
 	
-	public String getId() {
-		return id;
-	}
+	void rechargeCredit(int deltaCredit);
 	
-	public int getCredit() {
-		return credit;
-	}
-	
-	public void rechargeCredit(int deltaCredit) {
-		credit += deltaCredit;
-	}
-	
-	public void decreaseCredit(int amount) {
-		credit -= amount;
-		if (credit < 0) {
-			credit = 0;
-		}
-	}
-	
-	public String toString() {
-		return "{ id: " + id + ", credit: " + credit + " }";
-	}
+	void decreaseCredit(int amount);
 }
