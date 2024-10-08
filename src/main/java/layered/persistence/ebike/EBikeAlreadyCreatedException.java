@@ -1,4 +1,4 @@
-package layered.business;
+package layered.persistence.ebike;
 
 public class EBikeAlreadyCreatedException extends IllegalArgumentException {
     public EBikeAlreadyCreatedException(String id) {

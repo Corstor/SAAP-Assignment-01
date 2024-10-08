@@ -1,4 +1,7 @@
-package layered.persistence;
+package layered.persistence.ebike;
+
+import layered.persistence.P2d;
+import layered.persistence.V2d;
 
 public interface EBike {
     String getId();

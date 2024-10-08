@@ -1,11 +1,10 @@
-package layered.persistence;
+package layered.persistence.user;
 
-public class UserImpl implements User {
-
+class UserImpl implements User {
     private final String id;
     private int credit;
 
-    public UserImpl(final String id) {
+    UserImpl(final String id) {
         this.id = id;
         this.credit = 0;
     }

@@ -1,6 +1,9 @@
-package layered.persistence;
+package layered.persistence.ebike;
 
-public class EBikeImpl implements EBike {
+import layered.persistence.P2d;
+import layered.persistence.V2d;
+
+class EBikeImpl implements EBike {
 
     private final String id;
     private EBikeState state;
