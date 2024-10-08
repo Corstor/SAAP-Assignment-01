@@ -14,8 +14,8 @@ public class RideImpl implements Ride {
     private Optional<Date> endDate;
     private final User user;
     private final EBike bike;
-    private boolean onGoing;
     private final RideSimulation rideSimulation;
+    private boolean onGoing;
 
     public RideImpl(String id, String userId, String bikeId) {
         this.id = id;
