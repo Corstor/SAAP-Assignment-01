@@ -20,9 +20,8 @@ public abstract class AbstractUserCreation implements UserCreation {
             user.rechargeCredit(100);
             this.users.add(user);
         } else {
-            
+            throw new UserAlreadyCreatedException();
         }
-        // TODO throws a personalized exception
     }
 
     private boolean userDoesNotExists(String id) {
