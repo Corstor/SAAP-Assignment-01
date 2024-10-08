@@ -15,6 +15,7 @@ public class RideImpl implements Ride {
     private final User user;
     private final EBike bike;
     private boolean onGoing;
+    private final RideSimulation rideSimulation;
 
     public RideImpl(String id, String userId, String bikeId) {
         this.id = id;
@@ -23,6 +24,7 @@ public class RideImpl implements Ride {
 
         this.startedDate = new Date();
         this.endDate = Optional.empty();
+        this.rideSimulation = new RideSimulation(this.user, this.bike);
     }
 
     @Override
@@ -48,6 +50,7 @@ public class RideImpl implements Ride {
     @Override
     public void start() {
         onGoing = true;
+        this.rideSimulation.run();
     }
 
     @Override
