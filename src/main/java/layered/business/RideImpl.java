@@ -56,6 +56,7 @@ public class RideImpl implements Ride {
     @Override
     public void end() {
         endDate = Optional.of(new Date());
+        this.rideSimulation.stopSimulation();
         onGoing = false;
     }
 }
