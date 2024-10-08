@@ -7,6 +7,6 @@ public class UserCreationImpl implements UserCreation {
     @Override
     public void createUser(String id) {
         Users.createUser(id);
-        Users.getUserWithId(id).get().rechargeCredit(100);
+        Users.getUserWithIdOptional(id).get().rechargeCredit(100);
     }
 }

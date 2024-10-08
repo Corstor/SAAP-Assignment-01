@@ -8,14 +8,22 @@ public class Users {
     private static final List<User> users = new LinkedList<>();
     
     public static void createUser(String id) {
-        if (getUserWithId(id).isEmpty()) {
+        if (getUserWithIdOptional(id).isEmpty()) {
             users.add(new UserImpl(id));
         } else {
             throw new UserAlreadyCreatedException(id);
         }
     }
 
-    public static Optional<User> getUserWithId(String id) {
+    public static Optional<User> getUserWithIdOptional(String id) {
         return users.stream().filter(e -> e.getId() == id).findFirst();
+    }
+
+    public static User getUserWithId(String id) {
+        Optional<User> optionalUser = getUserWithIdOptional(id);
+        if (optionalUser.isEmpty()) {
+            throw new UserDoesNotExists(id);
+        }
+        return optionalUser.get();
     }
 }

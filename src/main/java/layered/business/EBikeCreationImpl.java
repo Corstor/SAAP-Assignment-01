@@ -7,6 +7,6 @@ public class EBikeCreationImpl implements EBikeCreation {
     @Override
     public void createEbike(String id, P2d position) {
         EBikes.createEBike(id);
-        EBikes.getEBikeWithId(id).get().updateLocation(position);
+        EBikes.getEBikeWithIdOptional(id).get().updateLocation(position);
     }
 }

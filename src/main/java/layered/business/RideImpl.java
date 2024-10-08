@@ -4,56 +4,55 @@ import java.util.Date;
 import java.util.Optional;
 
 import layered.persistence.ebike.EBike;
+import layered.persistence.ebike.EBikes;
 import layered.persistence.user.User;
+import layered.persistence.user.Users;
 
 public class RideImpl implements Ride {
+    private final String id;
+    private final Date startedDate;
+    private Optional<Date> endDate;
+    private final User user;
+    private final EBike bike;
+    private boolean onGoing;
+
+    public RideImpl(String id, String userId, String bikeId) {
+        this.id = id;
+        this.user = Users.getUserWithId(userId);
+        this.bike = EBikes.getEBikeWithId(bikeId);
+
+        this.startedDate = new Date();
+        this.endDate = Optional.empty();
+    }
 
     @Override
     public String getId() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getId'");
-    }
-
-    @Override
-    public void start() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'start'");
-    }
-
-    @Override
-    public void end() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'end'");
+        return this.id;
     }
 
     @Override
     public Date getStartedDate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getStartedDate'");
+        return this.startedDate;
     }
 
     @Override
     public boolean isOngoing() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isOngoing'");
+        return this.onGoing;
     }
 
     @Override
     public Optional<Date> getEndDate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEndDate'");
+        return this.endDate;
     }
 
     @Override
-    public User getUser() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUser'");
+    public void start() {
+        onGoing = true;
     }
 
     @Override
-    public EBike getEBike() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEBike'");
+    public void end() {
+        endDate = Optional.of(new Date());
+        onGoing = false;
     }
-    
 }
