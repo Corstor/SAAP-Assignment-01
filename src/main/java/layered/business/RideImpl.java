@@ -50,7 +50,7 @@ public class RideImpl implements Ride {
     @Override
     public void start() {
         onGoing = true;
-        this.rideSimulation.run();
+        this.rideSimulation.start();
     }
 
     @Override
@@ -58,5 +58,15 @@ public class RideImpl implements Ride {
         endDate = Optional.of(new Date());
         this.rideSimulation.stopSimulation();
         onGoing = false;
+    }
+
+    @Override
+    public String getUserId() {
+        return this.user.getId();
+    }
+
+    @Override
+    public String getBikeId() {
+        return this.bike.getId();
     }
 }
