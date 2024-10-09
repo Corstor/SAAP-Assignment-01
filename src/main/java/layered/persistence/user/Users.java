@@ -16,7 +16,7 @@ public class Users {
     }
 
     public static Optional<User> getUserWithIdOptional(String id) {
-        return users.stream().filter(e -> e.getId() == id).findFirst();
+        return users.stream().filter(e -> e.getId().equals(id)).findFirst();
     }
 
     public static User getUserWithId(String id) {

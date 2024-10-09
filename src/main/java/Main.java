@@ -3,7 +3,7 @@ import layered.presentation.UserGUI;
 
 public class Main {
     public static void main(String[] args) {
-        new AdminGUI();
+        new AdminGUI(8080);
         new UserGUI();
     }
 }
