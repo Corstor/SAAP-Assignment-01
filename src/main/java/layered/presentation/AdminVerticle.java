@@ -3,6 +3,7 @@ package layered.presentation;
 import java.util.logging.Logger;
 
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.handler.StaticHandler;
 import layered.business.EBikeCreation;
 import layered.business.EBikeCreationImpl;
 
@@ -24,11 +25,13 @@ public class AdminVerticle extends MyVerticle {
     protected void create(JsonObject request) {
         this.bikeCreator.createEbike(
             request.getString("id"),
-            request.getDouble("x"),
-            request.getDouble("y")
+            Double.parseDouble(request.getString("x")),
+            Double.parseDouble(request.getString("y"))
         );
     }
 
     @Override
-    protected void additionalSetups() {}
+    protected void additionalSetups() {
+        router.route().handler(StaticHandler.create("admin").setCachingEnabled(false));
+    }
 }

@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
-
+import io.vertx.ext.web.handler.StaticHandler;
 import layered.business.Ride;
 import layered.business.RideImpl;
 import layered.business.UserCreation;
@@ -28,6 +28,8 @@ public class UserVerticle extends MyVerticle {
     protected void additionalSetups() {
         router.route(HttpMethod.POST, "/api/ride/start").handler(this::startRide);
         router.route(HttpMethod.POST, "/api/ride/end").handler(this::endRide);
+
+        router.route().handler(StaticHandler.create("user").setCachingEnabled(false));
     }
 
     /**

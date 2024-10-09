@@ -1,5 +1,6 @@
 package layered.presentation;
 
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,7 +13,6 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
-import io.vertx.ext.web.handler.StaticHandler;
 
 public abstract class MyVerticle extends AbstractVerticle {
     private HttpServer server;
@@ -51,10 +51,7 @@ public abstract class MyVerticle extends AbstractVerticle {
 
     private void routerSetup() {
         router = Router.router(vertx);
-        /* static files by default searched in "webroot" directory */
-		router.route("/static/*").handler(StaticHandler.create().setCachingEnabled(false));
-		router.route().handler(BodyHandler.create());
-
+        router.route().handler(BodyHandler.create());
         router.route(HttpMethod.POST, "/api/register").handler(this::post);
         router.route(HttpMethod.GET, "/api/").handler(this::get);
     }
@@ -79,10 +76,10 @@ public abstract class MyVerticle extends AbstractVerticle {
 
         try {
             create(request);
-            reply.put("result", "Ok");
+            reply.put("result", "A " + createdObjectName + " has been created!");
         } catch (Exception e) {
             logger.log(Level.WARNING, e.getMessage());
-            reply.put("result", "Error: " + e.getMessage());
+            reply.put("result", "Error -> " + e.getMessage());
         }
         sendReply(context, reply);
     }
