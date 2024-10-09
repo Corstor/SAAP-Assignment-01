@@ -20,6 +20,11 @@ public class UserVerticle extends MyVerticle {
         //ADD post to do ride
     }
 
+    /**
+     * Create a user with an id.
+     * 
+     * @param request json request with the id of the user to create.
+     */
     @Override
     protected void create(JsonObject request) {
         this.userCreator.createUser(request.getString("id"));

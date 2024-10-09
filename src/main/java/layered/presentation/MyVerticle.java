@@ -47,14 +47,14 @@ public abstract class MyVerticle extends AbstractVerticle {
     private void initialSetup() {
         logger.log(Level.INFO, name + " web server initializing...");
         server = vertx.createHttpServer();
-        router = Router.router(vertx);
-
-        /* static files by default searched in "webroot" directory */
-		router.route("/static/*").handler(StaticHandler.create().setCachingEnabled(false));
-		router.route().handler(BodyHandler.create());
     }
 
     private void routerSetup() {
+        router = Router.router(vertx);
+        /* static files by default searched in "webroot" directory */
+		router.route("/static/*").handler(StaticHandler.create().setCachingEnabled(false));
+		router.route().handler(BodyHandler.create());
+
         router.route(HttpMethod.POST, "/api/register").handler(this::post);
         router.route(HttpMethod.GET, "/api/").handler(this::get);
     }
@@ -67,6 +67,9 @@ public abstract class MyVerticle extends AbstractVerticle {
 		logger.log(Level.INFO, name + " web server ready - port: " + port);
     }
 
+    /**
+     * Add other routes and their handler to the router if needed
+     */
     protected abstract void additionalSetups();
 
     private void post(RoutingContext context) {
@@ -84,6 +87,11 @@ public abstract class MyVerticle extends AbstractVerticle {
         sendReply(context, reply);
     }
 
+    /**
+     * Create an object starting from the request body.
+     * 
+     * @param request the request from which the object will be created.
+     */
     protected abstract void create(JsonObject request);
 
     private void get(RoutingContext context) {

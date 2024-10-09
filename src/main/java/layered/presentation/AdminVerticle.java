@@ -15,6 +15,11 @@ public class AdminVerticle extends MyVerticle {
         this.bikeCreator = new EBikeCreationImpl();
     }
 
+    /**
+     * Create an electric bike with an id, a x coord and a y coord.
+     * 
+     * @param request json request with the id, x and y of the electric bike to create.
+     */
     @Override
     protected void create(JsonObject request) {
         this.bikeCreator.createEbike(
@@ -25,6 +30,5 @@ public class AdminVerticle extends MyVerticle {
     }
 
     @Override
-    protected void additionalSetups() {
-    }
+    protected void additionalSetups() {}
 }
