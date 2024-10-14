@@ -35,12 +35,14 @@ public class UserStoreImpl implements UserStore {
 
     @Override
     public void saveUser(UserDB user) throws IOException {
+        loadAllUsers();
         this.users.add(user);
         this.saveAllUsers(this.users);
     }
 
     @Override
     public void deleteUser(String id) throws IOException {
+        loadAllUsers();
         this.users = this.users.stream().filter(user -> !user.id().equals(id)).toList();
         this.saveAllUsers(this.users);
     }
@@ -53,7 +55,8 @@ public class UserStoreImpl implements UserStore {
     }
 
     @Override
-    public UserDB getUserFromId(String id) {
+    public UserDB getUserFromId(String id) throws IOException {
+        loadAllUsers();
         return users.stream()
             .filter(user -> user.id().equals(id))
             .findFirst().get();

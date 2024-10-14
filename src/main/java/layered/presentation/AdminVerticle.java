@@ -34,4 +34,14 @@ public class AdminVerticle extends MyVerticle {
     protected void additionalSetups() {
         router.route().handler(StaticHandler.create("admin").setCachingEnabled(false));
     }
+
+    @Override
+    protected void save(JsonObject request) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    protected void load(String id, JsonObject reply) {
+        // TODO Auto-generated method stub
+    }
 }
