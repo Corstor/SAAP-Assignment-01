@@ -27,6 +27,11 @@ public class UserFactory {
         }
     }
 
+    public void createUser(String id, int credit) {
+        this.createUser(id);
+        this.getUserWithId(id).rechargeCredit(credit);
+    }
+
     public Optional<User> getUserWithIdOptional(String id) {
         return users.stream().filter(e -> e.getId().equals(id)).findFirst();
     }
