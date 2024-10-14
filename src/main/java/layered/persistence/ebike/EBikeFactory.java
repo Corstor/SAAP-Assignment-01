@@ -4,10 +4,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class EBikes {
-    private static final List<EBike> bikes = new LinkedList<>();
+public class EBikeFactory {
+    private final List<EBike> bikes;
+    private static EBikeFactory instance;
 
-    public static void createEBike(String id) {
+    private EBikeFactory() {
+        this.bikes = new LinkedList<>();
+    }
+
+    public static EBikeFactory getInstance() {
+        if (instance == null) {
+            instance = new EBikeFactory();
+        }
+        return instance;
+    }
+
+    public void createEBike(String id) {
         if (getEBikeWithIdOptional(id).isEmpty()) {
             bikes.add(new EBikeImpl(id));
         } else {
@@ -15,11 +27,11 @@ public class EBikes {
         }
     }
 
-    public static Optional<EBike> getEBikeWithIdOptional(String id) {
+    public Optional<EBike> getEBikeWithIdOptional(String id) {
         return bikes.stream().filter(e -> e.getId().equals(id)).findFirst();
     }
 
-    public static EBike getEBikeWithId(String id) {
+    public EBike getEBikeWithId(String id) {
         Optional<EBike> optionalUser = getEBikeWithIdOptional(id);
         if (optionalUser.isEmpty()) {
             throw new EBikeDoesNotExists(id);

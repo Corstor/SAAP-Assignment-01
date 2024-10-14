@@ -4,10 +4,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class Users {
-    private static final List<User> users = new LinkedList<>();
+public class UserFactory {
+    private static UserFactory instance;
+    private final List<User> users;
+
+    private UserFactory() {
+        users = new LinkedList<>();
+    }
+
+    public static UserFactory getInstance() {
+        if (instance == null) {
+            instance = new UserFactory();
+        }
+        return instance;
+    }
     
-    public static void createUser(String id) {
+    public void createUser(String id) {
         if (getUserWithIdOptional(id).isEmpty()) {
             users.add(new UserImpl(id));
         } else {
@@ -15,11 +27,11 @@ public class Users {
         }
     }
 
-    public static Optional<User> getUserWithIdOptional(String id) {
+    public Optional<User> getUserWithIdOptional(String id) {
         return users.stream().filter(e -> e.getId().equals(id)).findFirst();
     }
 
-    public static User getUserWithId(String id) {
+    public User getUserWithId(String id) {
         Optional<User> optionalUser = getUserWithIdOptional(id);
         if (optionalUser.isEmpty()) {
             throw new UserDoesNotExists(id);

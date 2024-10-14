@@ -4,9 +4,9 @@ import java.util.Date;
 import java.util.Optional;
 
 import layered.persistence.ebike.EBike;
-import layered.persistence.ebike.EBikes;
+import layered.persistence.ebike.EBikeFactory;
 import layered.persistence.user.User;
-import layered.persistence.user.Users;
+import layered.persistence.user.UserFactory;
 
 public class RideImpl implements Ride {
     private final String id;
@@ -19,8 +19,8 @@ public class RideImpl implements Ride {
 
     public RideImpl(String id, String userId, String bikeId) {
         this.id = id;
-        this.user = Users.getUserWithId(userId);
-        this.bike = EBikes.getEBikeWithId(bikeId);
+        this.user = UserFactory.getInstance().getUserWithId(userId);
+        this.bike = EBikeFactory.getInstance().getEBikeWithId(bikeId);
 
         this.startedDate = new Date();
         this.endDate = Optional.empty();

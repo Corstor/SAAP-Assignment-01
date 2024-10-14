@@ -1,12 +1,13 @@
 package layered.business;
 
-import layered.persistence.user.Users;
+import layered.persistence.user.UserFactory;
 
 public class UserCreationImpl implements UserCreation {
+    private final UserFactory factory = UserFactory.getInstance();
 
     @Override
     public void createUser(String id) {
-        Users.createUser(id);
-        Users.getUserWithId(id).rechargeCredit(100);
+        factory.createUser(id);
+        factory.getUserWithId(id).rechargeCredit(100);
     }
 }
