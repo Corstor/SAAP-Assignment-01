@@ -29,8 +29,7 @@ public class UserStoreImpl implements UserStore {
         return this.users;
     }
 
-    @Override
-    public void saveAllUsers(List<UserDB> users) throws IOException {
+    private void saveAllUsers(List<UserDB> users) throws IOException {
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, users);
     }
 

@@ -38,21 +38,9 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void saveUsers(List<User> users) {
+    public void saveUser(String id) {
         try {
-            this.store.saveAllUsers(
-                users.stream()
-                .map(user -> new UserDB(user.getId(), user.getCredit()))
-                .toList()
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void saveUser(User user) {
-        try {
+            var user = this.factory.getUserWithId(id);
             this.store.saveUser(new UserDB(user.getId(), user.getCredit()));
         } catch (IOException e) {
             e.printStackTrace();

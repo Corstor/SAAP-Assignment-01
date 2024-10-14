@@ -6,7 +6,6 @@ import java.io.IOException;
 
 public interface UserStore {
     List<UserDB> loadAllUsers() throws IOException;
-    void saveAllUsers(List<UserDB> users) throws IOException;
 
     void saveUser(UserDB user) throws IOException;
     void deleteUser(String id) throws IOException;
