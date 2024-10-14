@@ -1,4 +1,4 @@
-package layered.business;
+package layered.business.ebike;
 
 import layered.persistence.P2d;
 import layered.persistence.ebike.EBikeFactory;

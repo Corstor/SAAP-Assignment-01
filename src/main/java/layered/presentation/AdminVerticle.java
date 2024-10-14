@@ -4,8 +4,8 @@ import java.util.logging.Logger;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.handler.StaticHandler;
-import layered.business.EBikeCreation;
-import layered.business.EBikeCreationImpl;
+import layered.business.ebike.EBikeCreation;
+import layered.business.ebike.EBikeCreationImpl;
 
 public class AdminVerticle extends MyVerticle {
     private final EBikeCreation bikeCreator;

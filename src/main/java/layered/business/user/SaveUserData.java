@@ -1,4 +1,4 @@
-package layered.business;
+package layered.business.user;
 
 public interface SaveUserData {
     void saveUser(String id);

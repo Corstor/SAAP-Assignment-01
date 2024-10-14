@@ -11,8 +11,8 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.StaticHandler;
 import layered.business.Ride;
 import layered.business.RideImpl;
-import layered.business.UserCreation;
-import layered.business.UserCreationImpl;
+import layered.business.user.UserCreation;
+import layered.business.user.UserCreationImpl;
 
 public class UserVerticle extends MyVerticle {
     private final UserCreation userCreator;

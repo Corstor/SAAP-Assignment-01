@@ -1,4 +1,4 @@
-package layered.business;
+package layered.business.user;
 
 import layered.persistence.user.UserRepository;
 import layered.persistence.user.UserRepositoryImpl;

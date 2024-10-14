@@ -1,4 +1,4 @@
-package layered.business;
+package layered.business.user;
 
 import layered.persistence.user.UserFactory;
 
