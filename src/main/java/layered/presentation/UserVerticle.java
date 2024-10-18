@@ -1,5 +1,6 @@
 package layered.presentation;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -11,25 +12,20 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.StaticHandler;
 import layered.business.Ride;
 import layered.business.RideImpl;
-import layered.business.user.GetUserData;
-import layered.business.user.GetUserDataImpl;
-import layered.business.user.SaveUserData;
-import layered.business.user.SaveUserDataImpl;
-import layered.business.user.UserCreation;
-import layered.business.user.UserCreationImpl;
+import layered.business.user.UserFactory;
 
 public class UserVerticle extends MyVerticle {
-    private final UserCreation userCreator;
-    private final GetUserData getUserData;
-    private final SaveUserData saveUserData;
+    private UserFactory userFactory;
     private final List<Ride> rides = new LinkedList<>();
 
     public UserVerticle(final int port) {
         super(port, "User", "user");
         logger = Logger.getLogger("User Verticle");
-        this.userCreator = new UserCreationImpl();
-        this.getUserData = new GetUserDataImpl();
-        this.saveUserData = new SaveUserDataImpl();
+        try {
+            this.userFactory = UserFactory.getInstance();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -47,7 +43,11 @@ public class UserVerticle extends MyVerticle {
      */
     @Override
     protected void create(JsonObject request) {
-        this.userCreator.createUser(request.getString("id"));
+        try {
+            this.userFactory.createUser(request.getString("id"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void startRide(RoutingContext context) {
@@ -88,19 +88,7 @@ public class UserVerticle extends MyVerticle {
     }
 
     @Override
-    protected void save(JsonObject request) {
-        String id = request.getString("id");
-        Integer credit = request.getInteger("credit");
-        this.saveUserData.saveUser(id);
-        if (credit != null) {
-            this.saveUserData.changeUserCredit(id, credit);
-        }
-    }
-
-    @Override
     protected void load(String id, JsonObject reply) {
-        var pair = this.getUserData.getUserFromId(id);
-        reply.put("id", pair.first());
-        reply.put("credit", pair.second());
+        
     }
 }

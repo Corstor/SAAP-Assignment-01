@@ -1,4 +1,4 @@
-package layered.persistence.user;
+package layered.business.user;
 
 class UserDoesNotExists extends IllegalArgumentException {
     public UserDoesNotExists(String id) {

@@ -1,4 +1,4 @@
-package layered.persistence.user;
+package layered.business.user;
 
 class UserAlreadyCreatedException extends IllegalArgumentException {
     public UserAlreadyCreatedException(String id) {

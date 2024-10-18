@@ -1,6 +1,7 @@
-package layered.database;
+package layered.persistence;
 
 import java.util.List;
+import java.util.Optional;
 import java.io.IOException;
 
 
@@ -12,4 +13,5 @@ public interface UserStore {
 
     void changeUserCredit(String id, int credit) throws IOException;
     UserDB getUserFromId(String id) throws IOException;
+    Optional<UserDB> getUserFromIdOptional(String id) throws IOException;
 }

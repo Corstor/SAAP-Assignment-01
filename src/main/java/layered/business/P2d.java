@@ -1,4 +1,4 @@
-package layered.persistence;
+package layered.business;
 
 public class P2d implements java.io.Serializable {
 

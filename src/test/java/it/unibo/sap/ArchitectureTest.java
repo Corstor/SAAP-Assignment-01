@@ -14,15 +14,13 @@ public class ArchitectureTest {
         JavaClasses importedClasses = new ClassFileImporter().importPackages("layered");
 
         ArchRule ruleDep1 = layeredArchitecture().consideringAllDependencies()
-            .layer("Database").definedBy("..database..")
             .layer("Persistence").definedBy("..persistence..")
             .layer("Business").definedBy("..business..")
             .layer("Presentation").definedBy("..presentation..")
 
             .whereLayer("Presentation").mayNotBeAccessedByAnyLayer()
             .whereLayer("Business").mayOnlyBeAccessedByLayers("Presentation")
-            .whereLayer("Persistence").mayOnlyBeAccessedByLayers("Business")
-            .whereLayer("Database").mayOnlyBeAccessedByLayers("Persistence");
+            .whereLayer("Persistence").mayOnlyBeAccessedByLayers("Business");
 
         ruleDep1.check(importedClasses);
     }

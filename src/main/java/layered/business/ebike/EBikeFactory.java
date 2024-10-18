@@ -1,10 +1,13 @@
-package layered.persistence.ebike;
+package layered.business.ebike;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import layered.business.P2d;
+
 public class EBikeFactory {
+    //TODO Change bikes into using persistence layer
     private final List<EBike> bikes;
     private static EBikeFactory instance;
 
@@ -22,6 +25,17 @@ public class EBikeFactory {
     public void createEBike(String id) {
         if (getEBikeWithIdOptional(id).isEmpty()) {
             bikes.add(new EBikeImpl(id));
+        } else {
+            throw new EBikeAlreadyCreatedException(id);
+        }
+    }
+
+    public void createEBike(String id, double x, double y) {
+        if (getEBikeWithIdOptional(id).isEmpty()) {
+            var bike = new EBikeImpl(id);
+            bikes.add(bike);
+
+            bike.updateLocation(new P2d(x, y));
         } else {
             throw new EBikeAlreadyCreatedException(id);
         }

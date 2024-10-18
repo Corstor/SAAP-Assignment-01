@@ -54,8 +54,6 @@ public abstract class MyVerticle extends AbstractVerticle {
         router.route().handler(BodyHandler.create());
         router.route(HttpMethod.POST, "/api/register").handler(this::post);
         router.route(HttpMethod.GET, "/api/").handler(this::get);
-
-        router.route(HttpMethod.POST, "/api/save").handler(this::save);
     }
 
     private void endOfSetup() {
@@ -92,23 +90,6 @@ public abstract class MyVerticle extends AbstractVerticle {
      * @param request the request from which the object will be created.
      */
     protected abstract void create(JsonObject request);
-
-    protected void save(RoutingContext context) {
-        logger.log(Level.INFO, "Request to save a new " + createdObjectName);
-        JsonObject request = context.body().asJsonObject();
-        JsonObject reply = new JsonObject();
-
-        try {
-            save(request);
-            reply.put("result", "A " + createdObjectName + " has been saved!");
-        } catch (Exception e) {
-            logger.log(Level.WARNING, e.getMessage());
-            reply.put("result", "Error -> " + e.getMessage());
-        }
-        sendReply(context, reply);
-    }
-
-    protected abstract void save(JsonObject request);
 
     private void get(RoutingContext context) {
         logger.log(Level.INFO, "Asked to get data about " + context.request().getParam("id") + " " + createdObjectName);

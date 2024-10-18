@@ -1,7 +1,7 @@
-package layered.persistence.ebike;
+package layered.business.ebike;
 
-import layered.persistence.P2d;
-import layered.persistence.V2d;
+import layered.business.P2d;
+import layered.business.V2d;
 
 class EBikeImpl implements EBike {
 

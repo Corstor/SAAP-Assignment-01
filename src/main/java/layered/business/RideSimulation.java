@@ -1,9 +1,7 @@
 package layered.business;
 
-import layered.persistence.P2d;
-import layered.persistence.V2d;
-import layered.persistence.ebike.EBike;
-import layered.persistence.user.User;
+import layered.business.ebike.EBike;
+import layered.business.user.User;
 
 class RideSimulation extends Thread {
     private final User user;

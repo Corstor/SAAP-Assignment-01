@@ -1,4 +1,4 @@
-package layered.persistence.ebike;
+package layered.business.ebike;
 
 public enum EBikeState {
     AVAILABLE,

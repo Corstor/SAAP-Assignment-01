@@ -1,4 +1,4 @@
-package layered.database;
+package layered.persistence;
 
 public interface EBikeStore {
     

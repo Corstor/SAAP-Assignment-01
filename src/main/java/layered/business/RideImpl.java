@@ -1,12 +1,13 @@
 package layered.business;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 
-import layered.persistence.ebike.EBike;
-import layered.persistence.ebike.EBikeFactory;
-import layered.persistence.user.User;
-import layered.persistence.user.UserFactory;
+import layered.business.ebike.EBike;
+import layered.business.ebike.EBikeFactory;
+import layered.business.user.User;
+import layered.business.user.UserFactory;
 
 public class RideImpl implements Ride {
     private final String id;
@@ -17,7 +18,7 @@ public class RideImpl implements Ride {
     private final RideSimulation rideSimulation;
     private boolean onGoing;
 
-    public RideImpl(String id, String userId, String bikeId) {
+    public RideImpl(String id, String userId, String bikeId) throws IOException {
         this.id = id;
         this.user = UserFactory.getInstance().getUserWithId(userId);
         this.bike = EBikeFactory.getInstance().getEBikeWithId(bikeId);

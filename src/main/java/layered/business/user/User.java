@@ -1,4 +1,4 @@
-package layered.persistence.user;
+package layered.business.user;
 
 public interface User {
     String getId();

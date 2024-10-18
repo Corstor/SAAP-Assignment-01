@@ -1,6 +1,7 @@
-package layered.database;
+package layered.persistence;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.LinkedList;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,5 +61,13 @@ public class UserStoreImpl implements UserStore {
         return users.stream()
             .filter(user -> user.id().equals(id))
             .findFirst().get();
+    }
+
+    @Override
+    public Optional<UserDB> getUserFromIdOptional(String id) throws IOException {
+        loadAllUsers();
+        return users.stream()
+            .filter(user -> user.id().equals(id))
+            .findFirst();
     }
 }

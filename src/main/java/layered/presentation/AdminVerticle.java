@@ -4,16 +4,15 @@ import java.util.logging.Logger;
 
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.handler.StaticHandler;
-import layered.business.ebike.EBikeCreation;
-import layered.business.ebike.EBikeCreationImpl;
+import layered.business.ebike.EBikeFactory;
 
 public class AdminVerticle extends MyVerticle {
-    private final EBikeCreation bikeCreator;
+    private final EBikeFactory bikeFactory;
 
     public AdminVerticle(final int port) {
         super(port, "Admin", "EBike");
         logger = Logger.getLogger("Adming Verticle");
-        this.bikeCreator = new EBikeCreationImpl();
+        this.bikeFactory = EBikeFactory.getInstance();
     }
 
     /**
@@ -23,7 +22,7 @@ public class AdminVerticle extends MyVerticle {
      */
     @Override
     protected void create(JsonObject request) {
-        this.bikeCreator.createEbike(
+        this.bikeFactory.createEBike(
             request.getString("id"),
             Double.parseDouble(request.getString("x")),
             Double.parseDouble(request.getString("y"))
@@ -33,11 +32,6 @@ public class AdminVerticle extends MyVerticle {
     @Override
     protected void additionalSetups() {
         router.route().handler(StaticHandler.create("admin").setCachingEnabled(false));
-    }
-
-    @Override
-    protected void save(JsonObject request) {
-        // TODO Auto-generated method stub
     }
 
     @Override

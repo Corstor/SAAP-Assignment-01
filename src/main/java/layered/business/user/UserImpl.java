@@ -1,12 +1,16 @@
-package layered.persistence.user;
+package layered.business.user;
 
 class UserImpl implements User {
     private final String id;
     private int credit;
 
-    UserImpl(final String id) {
+    UserImpl(final String id, final int credit) {
         this.id = id;
-        this.credit = 0;
+        this.credit = credit;
+    }
+
+    UserImpl(final String id) {
+        this(id, 0);
     }
 
     @Override
