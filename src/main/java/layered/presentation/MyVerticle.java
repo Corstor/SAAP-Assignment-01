@@ -1,6 +1,7 @@
 package layered.presentation;
 
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -88,20 +89,27 @@ public abstract class MyVerticle extends AbstractVerticle {
      * Create an object starting from the request body.
      * 
      * @param request the request from which the object will be created.
+     * @throws IOException 
      */
-    protected abstract void create(JsonObject request);
+    protected abstract void create(JsonObject request) throws IOException;
 
     private void get(RoutingContext context) {
-        logger.log(Level.INFO, "Asked to get data about " + context.request().getParam("id") + " " + createdObjectName);
+        String id = context.request().getParam("id");
+        logger.log(Level.INFO, "Asked to get data about " + id + " " + createdObjectName);
 		JsonObject reply = new JsonObject();
 
-        load(context.request().getParam("id"), reply);
-
-		reply.put("result", "ok");
+        try {
+            load(id, reply);
+            reply.put("result", "The requested " + createdObjectName + " exists");
+        } catch (Exception e) {
+            logger.log(Level.WARNING, e.getMessage());
+            reply.put("result", "Error -> " + e.getMessage());
+        }
+		
 		sendReply(context, reply);
     }
 
-    protected abstract void load(String id, JsonObject reply);
+    protected abstract void load(String id, JsonObject reply) throws IOException;
 
     protected void sendReply(RoutingContext request, JsonObject reply) {
 		HttpServerResponse response = request.response();

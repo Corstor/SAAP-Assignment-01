@@ -24,7 +24,7 @@ public class UserVerticle extends MyVerticle {
         try {
             this.userFactory = UserFactory.getInstance();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, e.getMessage());
         }
     }
 
@@ -40,14 +40,17 @@ public class UserVerticle extends MyVerticle {
      * Create a user with an id.
      * 
      * @param request json request with the id of the user to create.
+     * @throws IOException 
      */
     @Override
-    protected void create(JsonObject request) {
-        try {
-            this.userFactory.createUser(request.getString("id"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    protected void create(JsonObject request) throws IOException {
+        this.userFactory.createUser(request.getString("id"));
+    }
+
+    @Override
+    protected void load(String id, JsonObject reply) throws IOException {
+        reply.put("id", id);
+        reply.put("credit", this.userFactory.getUserWithId(id).getCredit());
     }
 
     private void startRide(RoutingContext context) {
@@ -85,10 +88,5 @@ public class UserVerticle extends MyVerticle {
             reply.put("result", "Error: " + e.getMessage());
         }
         sendReply(context, reply);
-    }
-
-    @Override
-    protected void load(String id, JsonObject reply) {
-        
     }
 }
