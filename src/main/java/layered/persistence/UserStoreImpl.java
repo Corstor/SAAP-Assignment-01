@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class UserStoreImpl implements UserStore {
     private final File jsonFile;
-    private List<UserDB> users;
+    private List<Pair<String, Integer>> users;
     private final ObjectMapper objectMapper;
 
     public UserStoreImpl() throws IOException {
@@ -23,19 +23,19 @@ public class UserStoreImpl implements UserStore {
     }
 
     @Override
-    public List<UserDB> loadAllUsers() throws IOException {
+    public List<Pair<String, Integer>> loadAllUsers() throws IOException {
         this.users.clear();
-        this.users.addAll(objectMapper.readValue(jsonFile, new TypeReference<List<UserDB>>() {}));
+        this.users.addAll(objectMapper.readValue(jsonFile, new TypeReference<List<Pair<String, Integer>>>() {}));
 
         return this.users;
     }
 
-    private void saveAllUsers(List<UserDB> users) throws IOException {
+    private void saveAllUsers(List<Pair<String, Integer>> users) throws IOException {
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, users);
     }
 
     @Override
-    public void saveUser(UserDB user) throws IOException {
+    public void saveUser(Pair<String, Integer> user) throws IOException {
         loadAllUsers();
         this.users.add(user);
         this.saveAllUsers(this.users);
@@ -44,30 +44,30 @@ public class UserStoreImpl implements UserStore {
     @Override
     public void deleteUser(String id) throws IOException {
         loadAllUsers();
-        this.users = this.users.stream().filter(user -> !user.id().equals(id)).toList();
+        this.users = this.users.stream().filter(user -> !user.first().equals(id)).toList();
         this.saveAllUsers(this.users);
     }
 
     @Override
     public void changeUserCredit(String id, int credit) throws IOException {
         this.deleteUser(id);
-        this.users.add(new UserDB(id, credit));
+        this.users.add(new Pair<>(id, credit));
         this.saveAllUsers(this.users);
     }
 
     @Override
-    public UserDB getUserFromId(String id) throws IOException {
+    public Pair<String, Integer> getUserFromId(String id) throws IOException {
         loadAllUsers();
         return users.stream()
-            .filter(user -> user.id().equals(id))
+            .filter(user -> user.first().equals(id))
             .findFirst().get();
     }
 
     @Override
-    public Optional<UserDB> getUserFromIdOptional(String id) throws IOException {
+    public Optional<Pair<String, Integer>> getUserFromIdOptional(String id) throws IOException {
         loadAllUsers();
         return users.stream()
-            .filter(user -> user.id().equals(id))
+            .filter(user -> user.first().equals(id))
             .findFirst();
     }
 }

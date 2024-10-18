@@ -1,4 +1,4 @@
-document.getElementById("submit").addEventListener("click", async function() {
+document.getElementById("createEbike").addEventListener("click", async function() {
     const formData = new FormData(document.getElementById("bikeForm"));
 
     var object = {};
@@ -13,6 +13,6 @@ document.getElementById("submit").addEventListener("click", async function() {
         body: json
     }).then(async (response) => {
         const val = await response.json();
-        document.getElementById("response").innerText = JSON.stringify(val).split(":")[1].replace(/\"/g, "").replace("}", "");
+        document.getElementById("createResponse").innerText = JSON.stringify(val).split(":")[1].replace(/\"/g, "").replace("}", "");
     });
 });

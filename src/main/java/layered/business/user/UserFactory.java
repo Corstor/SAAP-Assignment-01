@@ -2,7 +2,7 @@ package layered.business.user;
 
 import java.io.IOException;
 
-import layered.persistence.UserDB;
+import layered.persistence.Pair;
 import layered.persistence.UserStore;
 import layered.persistence.UserStoreImpl;
 
@@ -23,7 +23,7 @@ public class UserFactory {
     
     public void createUser(String id) throws IOException {
         if (this.userStore.getUserFromIdOptional(id).isEmpty()) {
-            this.userStore.saveUser(new UserDB(id, 0));
+            this.userStore.saveUser(new Pair<>(id, 0));
         } else {
             throw new UserAlreadyCreatedException(id);
         }
@@ -37,7 +37,7 @@ public class UserFactory {
     public User getUserWithId(String id) throws IOException {
         var user = this.userStore.getUserFromIdOptional(id);
         if (user.isPresent()) {
-            return new UserImpl(id, user.get().credit());
+            return new UserImpl(id, user.get().second());
         } else {
             throw new UserDoesNotExists(id);
         }

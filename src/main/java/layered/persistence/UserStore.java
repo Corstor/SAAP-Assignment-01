@@ -6,12 +6,12 @@ import java.io.IOException;
 
 
 public interface UserStore {
-    List<UserDB> loadAllUsers() throws IOException;
+    List<Pair<String, Integer>> loadAllUsers() throws IOException;
 
-    void saveUser(UserDB user) throws IOException;
+    void saveUser(Pair<String, Integer> user) throws IOException;
     void deleteUser(String id) throws IOException;
 
     void changeUserCredit(String id, int credit) throws IOException;
-    UserDB getUserFromId(String id) throws IOException;
-    Optional<UserDB> getUserFromIdOptional(String id) throws IOException;
+    Pair<String, Integer> getUserFromId(String id) throws IOException;
+    Optional<Pair<String, Integer>> getUserFromIdOptional(String id) throws IOException;
 }
