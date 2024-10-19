@@ -1,6 +1,7 @@
 package layered.business.ebike;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import layered.business.P2d;
@@ -70,6 +71,7 @@ class EBikeImpl implements EBike {
         }
     }
 
+    @JsonIgnore
     @Override
     public boolean isAvailable() {
         return this.state.equals(EBikeState.AVAILABLE);
