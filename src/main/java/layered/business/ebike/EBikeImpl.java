@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import layered.business.P2d;
 import layered.business.V2d;
 
-class EBikeImpl implements EBike {
+public class EBikeImpl implements EBike {
 
     private final String id;
     private EBikeState state;

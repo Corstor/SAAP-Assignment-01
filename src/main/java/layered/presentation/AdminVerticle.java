@@ -52,4 +52,9 @@ public class AdminVerticle extends MyVerticle {
         reply.put("speed", bike.getSpeed());
         reply.put("batteryLevel", bike.getBatteryLevel());
     }
+
+    @Override
+    protected void loadAllBikes(JsonObject reply) throws IOException {
+        reply.put("bikes", this.bikeFactory.getEBikes());
+    }
 }

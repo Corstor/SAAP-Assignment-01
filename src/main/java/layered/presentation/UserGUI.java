@@ -6,7 +6,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.awt.*;
+
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -15,6 +19,8 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
+import layered.business.ebike.EBike;
+import layered.business.ebike.EBikeImpl;
 
 public class UserGUI extends JFrame {
     private final WebClient client;
@@ -26,9 +32,8 @@ public class UserGUI extends JFrame {
     public UserGUI() {
         Vertx vertx = Vertx.vertx();
         this.client = WebClient.create(
-            vertx, 
-            new WebClientOptions().setDefaultPort(8081).setDefaultHost("localhost")
-        );
+                vertx,
+                new WebClientOptions().setDefaultPort(8081).setDefaultHost("localhost"));
 
         this.idField = new JTextField(30);
         this.messageField = new JLabel();
@@ -56,14 +61,14 @@ public class UserGUI extends JFrame {
                 request.put("id", id);
 
                 client.post("/api/register")
-                    .sendBuffer(Buffer.buffer(request.encode()), res -> {
-                        var result = res.result().bodyAsJsonObject();
-                        if (result.getString("result").equals("Ok")) {
-                            messageField.setText("User created!");
-                        } else {
-                            messageField.setText(result.getString("result"));
-                        }
-                    });
+                        .sendBuffer(Buffer.buffer(request.encode()), res -> {
+                            var result = res.result().bodyAsJsonObject();
+                            if (result.getString("result").equals("Ok")) {
+                                messageField.setText("User created!");
+                            } else {
+                                messageField.setText(result.getString("result"));
+                            }
+                        });
             }
         });
 
@@ -72,16 +77,34 @@ public class UserGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String id = idField.getText();
                 client.get("/api")
-                    .addQueryParam("id", id)
-                    .send(res -> {
-                        var result = res.result().bodyAsJsonObject();
-                        if (result.getString("result").equals("Ok")) {
-                            new RideGUI(id, result.getInteger("credit"), client);
+                        .addQueryParam("id", id)
+                        .send(res -> {
+                            var result = res.result().bodyAsJsonObject();
+                            if (result.getString("result").equals("Ok")) {
+                                createRideGUI(id, result);
+                            } else {
+                                messageField.setText(result.getString("result"));
+                            }
+                        });
+            }
+
+            private void createRideGUI(String id, JsonObject result) {
+                client.get("/api/bikes").send(res2 -> {
+                    var result2 = res2.result().bodyAsJsonObject();
+                    if (result2.getString("result").equals("Ok")) {
+                        var objectMapper = new ObjectMapper();
+                        var type = objectMapper.getTypeFactory().constructCollectionType(List.class,
+                                EBikeImpl.class);
+                        try {
+                            List<EBike> bikes = objectMapper.readValue(result2.getJsonArray("bikes").toString(), type);
+
+                            new RideGUI(id, result.getInteger("credit"), client, bikes);
                             dispose();
-                        } else {
-                            messageField.setText(result.getString("result"));
+                        } catch (Exception e2) {
+                            e2.printStackTrace();
                         }
-                    });
+                    }
+                });
             }
         });
 

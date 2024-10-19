@@ -55,6 +55,7 @@ public abstract class MyVerticle extends AbstractVerticle {
         router.route().handler(BodyHandler.create());
         router.route(HttpMethod.POST, "/api/register").handler(this::post);
         router.route(HttpMethod.GET, "/api").handler(this::get);
+        router.route(HttpMethod.GET, "/api/bikes").handler(this::getBikes);
     }
 
     private void endOfSetup() {
@@ -108,6 +109,23 @@ public abstract class MyVerticle extends AbstractVerticle {
 		
 		sendReply(context, reply);
     }
+
+    private void getBikes(RoutingContext context) {
+        logger.log(Level.INFO, "Asked to get data about all the bikes");
+		JsonObject reply = new JsonObject();
+
+        try {
+            loadAllBikes(reply);
+            reply.put("result", "Ok");
+        } catch (Exception e) {
+            logger.log(Level.WARNING, e.getMessage());
+            reply.put("result", "Error -> " + e.getMessage());
+        }
+		
+		sendReply(context, reply);
+    }
+
+    protected abstract void loadAllBikes(JsonObject reply) throws IOException;
 
     protected abstract void load(String id, JsonObject reply) throws IOException;
 

@@ -12,10 +12,12 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.StaticHandler;
 import layered.business.Ride;
 import layered.business.RideImpl;
+import layered.business.ebike.EBikeFactory;
 import layered.business.user.UserFactory;
 
 public class UserVerticle extends MyVerticle {
     private UserFactory userFactory;
+    private EBikeFactory bikeFactory;
     private final List<Ride> rides = new LinkedList<>();
 
     public UserVerticle(final int port) {
@@ -23,6 +25,7 @@ public class UserVerticle extends MyVerticle {
         logger = Logger.getLogger("User Verticle");
         try {
             this.userFactory = UserFactory.getInstance();
+            this.bikeFactory = EBikeFactory.getInstance();
         } catch (IOException e) {
             logger.log(Level.WARNING, e.getMessage());
         }
@@ -89,5 +92,10 @@ public class UserVerticle extends MyVerticle {
             reply.put("result", "Error: " + e.getMessage());
         }
         sendReply(context, reply);
+    }
+
+    @Override
+    protected void loadAllBikes(JsonObject reply) throws IOException {
+        reply.put("bikes", this.bikeFactory.getEBikes());
     }
 }

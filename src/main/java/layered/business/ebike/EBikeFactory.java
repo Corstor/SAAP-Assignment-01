@@ -1,6 +1,7 @@
 package layered.business.ebike;
 
 import java.io.IOException;
+import java.util.List;
 
 import layered.business.P2d;
 import layered.persistence.Store;
@@ -47,5 +48,9 @@ public class EBikeFactory {
             throw new EBikeDoesNotExists(id);
         }
         return bike.get();
+    }
+
+    public List<EBike> getEBikes() throws IOException {
+        return List.copyOf(this.bikesStore.loadAllValues().values());
     }
 }

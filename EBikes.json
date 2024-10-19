@@ -40,5 +40,19 @@
     },
     "speed" : 0.0,
     "batteryLevel" : 100
+  },
+  "3" : {
+    "id" : "3",
+    "state" : "AVAILABLE",
+    "location" : {
+      "x" : 10.0,
+      "y" : -10.0
+    },
+    "direction" : {
+      "x" : 1.0,
+      "y" : 0.0
+    },
+    "speed" : 0.0,
+    "batteryLevel" : 100
   }
 }
