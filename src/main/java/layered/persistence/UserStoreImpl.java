@@ -18,16 +18,11 @@ public class UserStoreImpl implements UserStore {
         this.jsonFile = new File("users.json");
         this.objectMapper = new ObjectMapper();
         this.users = new LinkedList<>();
-
-        this.saveAllUsers(this.users); //Create the file
     }
 
     @Override
     public List<Pair<String, Integer>> loadAllUsers() throws IOException {
-        this.users.clear();
-        this.users.addAll(objectMapper.readValue(jsonFile, new TypeReference<List<Pair<String, Integer>>>() {}));
-
-        return this.users;
+        return objectMapper.readValue(jsonFile, new TypeReference<List<Pair<String, Integer>>>() {});
     }
 
     private void saveAllUsers(List<Pair<String, Integer>> users) throws IOException {
@@ -36,15 +31,14 @@ public class UserStoreImpl implements UserStore {
 
     @Override
     public void saveUser(Pair<String, Integer> user) throws IOException {
-        loadAllUsers();
+        this.users = loadAllUsers();
         this.users.add(user);
         this.saveAllUsers(this.users);
     }
 
     @Override
     public void deleteUser(String id) throws IOException {
-        loadAllUsers();
-        this.users = this.users.stream().filter(user -> !user.first().equals(id)).toList();
+        this.users = loadAllUsers().stream().filter(user -> !user.first().equals(id)).toList();
         this.saveAllUsers(this.users);
     }
 
@@ -57,15 +51,12 @@ public class UserStoreImpl implements UserStore {
 
     @Override
     public Pair<String, Integer> getUserFromId(String id) throws IOException {
-        loadAllUsers();
-        return users.stream()
-            .filter(user -> user.first().equals(id))
-            .findFirst().get();
+        return getUserFromIdOptional(id).get();
     }
 
     @Override
     public Optional<Pair<String, Integer>> getUserFromIdOptional(String id) throws IOException {
-        loadAllUsers();
+        this.users = loadAllUsers();
         return users.stream()
             .filter(user -> user.first().equals(id))
             .findFirst();

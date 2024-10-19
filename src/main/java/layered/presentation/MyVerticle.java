@@ -54,7 +54,7 @@ public abstract class MyVerticle extends AbstractVerticle {
         router = Router.router(vertx);
         router.route().handler(BodyHandler.create());
         router.route(HttpMethod.POST, "/api/register").handler(this::post);
-        router.route(HttpMethod.GET, "/api/").handler(this::get);
+        router.route(HttpMethod.GET, "/api").handler(this::get);
     }
 
     private void endOfSetup() {

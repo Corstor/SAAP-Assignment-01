@@ -44,7 +44,7 @@ public class UserVerticle extends MyVerticle {
      */
     @Override
     protected void create(JsonObject request) throws IOException {
-        this.userFactory.createUser(request.getString("id"));
+        this.userFactory.createUser(request.getString("id"), 100);
     }
 
     @Override
