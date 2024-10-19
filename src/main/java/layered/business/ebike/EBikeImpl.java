@@ -1,5 +1,8 @@
 package layered.business.ebike;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import layered.business.P2d;
 import layered.business.V2d;
 
@@ -12,7 +15,8 @@ class EBikeImpl implements EBike {
     private double speed;
     private int batteryLevel;
 
-    public EBikeImpl(final String id) {
+    @JsonCreator
+    public EBikeImpl(@JsonProperty("id") final String id) {
         this.id = id;
         this.state = EBikeState.AVAILABLE;
         this.location = new P2d(0, 0);

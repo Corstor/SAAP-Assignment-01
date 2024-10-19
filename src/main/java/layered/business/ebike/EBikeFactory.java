@@ -1,18 +1,17 @@
 package layered.business.ebike;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import layered.business.P2d;
 import layered.persistence.Store;
 import layered.persistence.StoreImpl;
 
 public class EBikeFactory {
-    private final Store<EBike> bikesStore;
+    private final Store<EBikeImpl> bikesStore;
     private static EBikeFactory instance;
 
     private EBikeFactory() throws IOException {
-        this.bikesStore = new StoreImpl<>("EBikes", EBike.class);
+        this.bikesStore = new StoreImpl<>("EBikes", EBikeImpl.class);
     }
 
     public static EBikeFactory getInstance() throws IOException {
@@ -37,13 +36,13 @@ public class EBikeFactory {
     }
     
     private void checkBikeExistance(String id) throws IOException {
-        if (this.bikesStore.getValueFromIdOptional(id).isEmpty()) {
+        if (this.bikesStore.getValueFromIdOptional(id).isPresent()) {
             throw new EBikeAlreadyCreatedException(id);
         }
     }
 
     public EBike getEBikeWithId(String id) throws IOException {
-        Optional<EBike> bike = this.bikesStore.getValueFromIdOptional(id);
+        var bike = this.bikesStore.getValueFromIdOptional(id);
         if (bike.isEmpty()) {
             throw new EBikeDoesNotExists(id);
         }

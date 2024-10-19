@@ -23,8 +23,8 @@ public class StoreImpl<X> implements Store<X> {
         this.type = objectMapper.getTypeFactory().constructMapType(HashMap.class, String.class, classRef);
         this.values = new HashMap<>();
 
-        //Create a new file if not exists
-        if (jsonFile.createNewFile()) { 
+        //Create a new file if it does not exists
+        if (jsonFile.createNewFile()) {
             this.saveAllValues(values);
         } 
     }

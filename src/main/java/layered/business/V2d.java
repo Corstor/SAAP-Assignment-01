@@ -1,19 +1,24 @@
 package layered.business;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class V2d implements java.io.Serializable {
 
     private double x,y;
 
-    public V2d(double x,double y){
+    @JsonCreator
+    public V2d(@JsonProperty("x") double x, @JsonProperty("y") double y){
         this.x = x;
         this.y = y;
     }
 
-    public double x() {
+    public double getX() {
     	return x;
     }
     
-    public double y() {
+    public double getY() {
     	return y;
     }
     
@@ -35,6 +40,7 @@ public class V2d implements java.io.Serializable {
         return (double)Math.sqrt(x*x+y*y);
     }
 
+    @JsonIgnore
     public V2d getNormalized(){
         double module=(double)Math.sqrt(x*x+y*y);
         return new V2d(x/module,y/module);

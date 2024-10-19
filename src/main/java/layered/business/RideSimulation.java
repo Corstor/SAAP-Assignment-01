@@ -31,20 +31,20 @@ class RideSimulation extends Thread {
             this.bike.updateLocation(location.sum(direction.mul(speed)));
             location = bike.getLocation();
 
-            if (location.x() > 200 || location.x() < -200) {
-				bike.updateDirection(new V2d(-direction.x(), direction.y()));
-				if (location.x() > 200) {
-					bike.updateLocation(new P2d(200, location.y()));
+            if (location.getX() > 200 || location.getX() < -200) {
+				bike.updateDirection(new V2d(-direction.getX(), direction.getY()));
+				if (location.getX() > 200) {
+					bike.updateLocation(new P2d(200, location.getY()));
 				} else {
-					bike.updateLocation(new P2d(-200, location.y()));
+					bike.updateLocation(new P2d(-200, location.getY()));
 				}
 			};
-			if (location.y() > 200 || location.y() < -200) {
-				bike.updateDirection(new V2d(direction.x(), -direction.y()));
-				if (location.y() > 200) {
-					bike.updateLocation(new P2d(location.x(), 200));
+			if (location.getY() > 200 || location.getY() < -200) {
+				bike.updateDirection(new V2d(direction.getX(), -direction.getY()));
+				if (location.getY() > 200) {
+					bike.updateLocation(new P2d(location.getX(), 200));
 				} else {
-					bike.updateLocation(new P2d(location.x(), -200));
+					bike.updateLocation(new P2d(location.getX(), -200));
 				}
 			};
 

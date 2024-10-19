@@ -1,1 +1,17 @@
-{ }
+{
+  "1" : {
+    "id" : "1",
+    "state" : "AVAILABLE",
+    "location" : {
+      "x" : 0.0,
+      "y" : 0.0
+    },
+    "direction" : {
+      "x" : 1.0,
+      "y" : 0.0
+    },
+    "speed" : 0.0,
+    "batteryLevel" : 100,
+    "available" : true
+  }
+}
