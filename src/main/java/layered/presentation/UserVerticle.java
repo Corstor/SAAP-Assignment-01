@@ -49,8 +49,8 @@ public class UserVerticle extends MyVerticle {
 
     @Override
     protected void load(String id, JsonObject reply) throws IOException {
-        reply.put("id", id);
         var user = this.userFactory.getUserWithId(id);
+        reply.put("id", id);
         reply.put("credit", user.getCredit());
     }
 

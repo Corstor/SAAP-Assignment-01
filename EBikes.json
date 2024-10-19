@@ -12,5 +12,33 @@
     },
     "speed" : 0.0,
     "batteryLevel" : 100
+  },
+  "12" : {
+    "id" : "12",
+    "state" : "AVAILABLE",
+    "location" : {
+      "x" : 0.0,
+      "y" : 0.0
+    },
+    "direction" : {
+      "x" : 1.0,
+      "y" : 0.0
+    },
+    "speed" : 0.0,
+    "batteryLevel" : 100
+  },
+  "2" : {
+    "id" : "2",
+    "state" : "AVAILABLE",
+    "location" : {
+      "x" : 1000.0,
+      "y" : 0.0
+    },
+    "direction" : {
+      "x" : 1.0,
+      "y" : 0.0
+    },
+    "speed" : 0.0,
+    "batteryLevel" : 100
   }
 }

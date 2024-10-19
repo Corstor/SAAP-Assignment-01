@@ -43,7 +43,13 @@ public class AdminVerticle extends MyVerticle {
     }
 
     @Override
-    protected void load(String id, JsonObject reply) {
-        // TODO Auto-generated method stub
+    protected void load(String id, JsonObject reply) throws IOException {
+        var bike = this.bikeFactory.getEBikeWithId(id);
+        reply.put("id", id);
+        reply.put("state", bike.getState());
+        reply.put("location", bike.getLocation());
+        reply.put("direction", bike.getDirection());
+        reply.put("speed", bike.getSpeed());
+        reply.put("batteryLevel", bike.getBatteryLevel());
     }
 }
