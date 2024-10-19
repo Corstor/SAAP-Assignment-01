@@ -23,33 +23,30 @@ public class EBikeFactory {
     }
 
     public void createEBike(String id) throws IOException {
-        if (getBikeFromStore(id).isEmpty()) {
-            this.bikesStore.saveValue("ebike:" + id, new EBikeImpl(id));
-        } else {
-            throw new EBikeAlreadyCreatedException(id);
-        }
+        checkBikeExistance(id);
+
+        this.bikesStore.saveValue(id, new EBikeImpl(id));
     }
 
     public void createEBike(String id, double x, double y) throws IOException {
-        if (getBikeFromStore(id).isEmpty()) {
-            var bike = new EBikeImpl(id);
-            bike.updateLocation(new P2d(x, y));
+        checkBikeExistance(id);
 
-            this.bikesStore.saveValue("ebike:" + id, bike);
-        } else {
+        var bike = new EBikeImpl(id);
+        bike.updateLocation(new P2d(x, y));
+        this.bikesStore.saveValue(id, bike);
+    }
+    
+    private void checkBikeExistance(String id) throws IOException {
+        if (this.bikesStore.getValueFromIdOptional(id).isEmpty()) {
             throw new EBikeAlreadyCreatedException(id);
         }
     }
 
     public EBike getEBikeWithId(String id) throws IOException {
-        Optional<EBike> bike = getBikeFromStore(id);
+        Optional<EBike> bike = this.bikesStore.getValueFromIdOptional(id);
         if (bike.isEmpty()) {
             throw new EBikeDoesNotExists(id);
         }
         return bike.get();
-    }
-
-    private Optional<EBike> getBikeFromStore(String id) throws IOException {
-        return this.bikesStore.getValueFromIdOptional("bike:" + id);
     }
 }

@@ -1,7 +1,6 @@
 package layered.business.user;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import layered.persistence.Store;
 import layered.persistence.StoreImpl;
@@ -22,37 +21,28 @@ public class UserFactory {
     }
     
     public void createUser(String id) throws IOException {
-        if (getUserFromStore(id).isEmpty()) {
-            this.userStore.saveValue("user:" + id, new UserImpl(id));
-        } else {
-            throw new UserAlreadyCreatedException(id);
-        }
-    }
+        checkUserExistance(id);
 
-    private Optional<User> getUserFromStore(String id) throws IOException {
-        Optional<User> user = Optional.empty();
-        System.out.println("storedUser");
-        var storedUser = this.userStore.getValueFromIdOptional("user:" + id);
-        if (storedUser.isPresent()) {
-            user = Optional.of(storedUser.get());
-        }
-        return user;
+        this.userStore.saveValue(id, new UserImpl(id));
     }
-
+    
     public void createUser(String id, int credit) throws IOException {
-        if (getUserFromStore(id).isEmpty()) {
-            this.userStore.saveValue("user:" + id, new UserImpl(id, credit));
-        } else {
+        checkUserExistance(id);
+
+        this.userStore.saveValue(id, new UserImpl(id, credit));
+    }
+    
+    private void checkUserExistance(String id) throws IOException {
+        if (this.userStore.getValueFromIdOptional(id).isPresent()) {
             throw new UserAlreadyCreatedException(id);
         }
     }
 
     public User getUserWithId(String id) throws IOException {
-        var user = getUserFromStore(id);
-        if (user.isPresent()) {
-            return user.get();
-        } else {
+        var user = this.userStore.getValueFromIdOptional(id);
+        if (user.isEmpty()) {
             throw new UserDoesNotExists(id);
         }
+        return user.get();
     }
 }
