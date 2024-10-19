@@ -77,7 +77,7 @@ public abstract class MyVerticle extends AbstractVerticle {
 
         try {
             create(request);
-            reply.put("result", "A " + createdObjectName + " has been created!");
+            reply.put("result", "Ok");
         } catch (Exception e) {
             logger.log(Level.WARNING, e.getMessage());
             reply.put("result", "Error -> " + e.getMessage());
@@ -100,7 +100,7 @@ public abstract class MyVerticle extends AbstractVerticle {
 
         try {
             load(id, reply);
-            reply.put("result", "The requested " + createdObjectName + " exists");
+            reply.put("result", "Ok");
         } catch (Exception e) {
             logger.log(Level.WARNING, e.getMessage());
             reply.put("result", "Error -> " + e.getMessage());

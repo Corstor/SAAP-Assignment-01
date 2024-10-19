@@ -50,7 +50,8 @@ public class UserVerticle extends MyVerticle {
     @Override
     protected void load(String id, JsonObject reply) throws IOException {
         reply.put("id", id);
-        reply.put("credit", this.userFactory.getUserWithId(id).getCredit());
+        var user = this.userFactory.getUserWithId(id);
+        reply.put("credit", user.getCredit());
     }
 
     private void startRide(RoutingContext context) {

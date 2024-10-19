@@ -1,55 +1,55 @@
 package layered.business.ebike;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.io.IOException;
 import java.util.Optional;
 
 import layered.business.P2d;
+import layered.persistence.Store;
+import layered.persistence.StoreImpl;
 
 public class EBikeFactory {
-    //TODO Change bikes into using persistence layer
-    private final List<EBike> bikes;
+    private final Store<EBike> bikesStore;
     private static EBikeFactory instance;
 
-    private EBikeFactory() {
-        this.bikes = new LinkedList<>();
+    private EBikeFactory() throws IOException {
+        this.bikesStore = new StoreImpl<>(EBike.class);
     }
 
-    public static EBikeFactory getInstance() {
+    public static EBikeFactory getInstance() throws IOException {
         if (instance == null) {
             instance = new EBikeFactory();
         }
         return instance;
     }
 
-    public void createEBike(String id) {
-        if (getEBikeWithIdOptional(id).isEmpty()) {
-            bikes.add(new EBikeImpl(id));
+    public void createEBike(String id) throws IOException {
+        if (getBikeFromStore(id).isEmpty()) {
+            this.bikesStore.saveValue("ebike:" + id, new EBikeImpl(id));
         } else {
             throw new EBikeAlreadyCreatedException(id);
         }
     }
 
-    public void createEBike(String id, double x, double y) {
-        if (getEBikeWithIdOptional(id).isEmpty()) {
+    public void createEBike(String id, double x, double y) throws IOException {
+        if (getBikeFromStore(id).isEmpty()) {
             var bike = new EBikeImpl(id);
-            bikes.add(bike);
-
             bike.updateLocation(new P2d(x, y));
+
+            this.bikesStore.saveValue("ebike:" + id, bike);
         } else {
             throw new EBikeAlreadyCreatedException(id);
         }
     }
 
-    public Optional<EBike> getEBikeWithIdOptional(String id) {
-        return bikes.stream().filter(e -> e.getId().equals(id)).findFirst();
-    }
-
-    public EBike getEBikeWithId(String id) {
-        Optional<EBike> optionalUser = getEBikeWithIdOptional(id);
-        if (optionalUser.isEmpty()) {
+    public EBike getEBikeWithId(String id) throws IOException {
+        Optional<EBike> bike = getBikeFromStore(id);
+        if (bike.isEmpty()) {
             throw new EBikeDoesNotExists(id);
         }
-        return optionalUser.get();
+        return bike.get();
+    }
+
+    private Optional<EBike> getBikeFromStore(String id) throws IOException {
+        return this.bikesStore.getValueFromIdOptional("bike:" + id);
     }
 }

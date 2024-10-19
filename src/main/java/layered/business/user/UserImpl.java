@@ -1,10 +1,14 @@
 package layered.business.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 class UserImpl implements User {
     private final String id;
     private int credit;
 
-    UserImpl(final String id, final int credit) {
+    @JsonCreator
+    UserImpl(@JsonProperty("id") final String id, @JsonProperty("credit") final int credit) {
         this.id = id;
         this.credit = credit;
     }
@@ -36,6 +40,7 @@ class UserImpl implements User {
         this.credit += amount;
     }
 
+    @Override
     public String toString() {
 		return "{ id: " + this.id + ", credit: " + this.credit + " }";
 	}

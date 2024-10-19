@@ -6,7 +6,8 @@ import java.util.stream.Collectors;
 import java.util.HashMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.type.MapType;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -14,10 +15,12 @@ public class StoreImpl<X> implements Store<X> {
     private final File jsonFile;
     private Map<String, X> values;
     private final ObjectMapper objectMapper;
+    private final MapType type;
 
-    public StoreImpl() throws IOException {
+    public StoreImpl(Class<X> classRef) throws IOException {
         this.jsonFile = new File("values.json");
         this.objectMapper = new ObjectMapper();
+        this.type = objectMapper.getTypeFactory().constructMapType(HashMap.class, String.class, classRef);
         this.values = new HashMap<>();
 
         //Create a new file if not exists
@@ -28,7 +31,7 @@ public class StoreImpl<X> implements Store<X> {
 
     @Override
     public Map<String, X> loadAllValues() throws IOException {
-        return objectMapper.readValue(jsonFile, new TypeReference<Map<String, X>>() {});
+        return objectMapper.readValue(jsonFile, type);
     }
 
     private void saveAllValues(Map<String, X> values) throws IOException {
