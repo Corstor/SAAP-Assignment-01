@@ -17,8 +17,8 @@ public class StoreImpl<X> implements Store<X> {
     private final ObjectMapper objectMapper;
     private final MapType type;
 
-    public StoreImpl(Class<X> classRef) throws IOException {
-        this.jsonFile = new File("values.json");
+    public StoreImpl(String fileName, Class<X> classRef) throws IOException {
+        this.jsonFile = new File(fileName + ".json");
         this.objectMapper = new ObjectMapper();
         this.type = objectMapper.getTypeFactory().constructMapType(HashMap.class, String.class, classRef);
         this.values = new HashMap<>();

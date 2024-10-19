@@ -12,7 +12,7 @@ public class EBikeFactory {
     private static EBikeFactory instance;
 
     private EBikeFactory() throws IOException {
-        this.bikesStore = new StoreImpl<>(EBike.class);
+        this.bikesStore = new StoreImpl<>("EBikes", EBike.class);
     }
 
     public static EBikeFactory getInstance() throws IOException {

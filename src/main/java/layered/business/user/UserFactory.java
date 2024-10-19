@@ -11,7 +11,7 @@ public class UserFactory {
     private final Store<UserImpl> userStore;
 
     private UserFactory() throws IOException {
-        userStore = new StoreImpl<>(UserImpl.class);
+        userStore = new StoreImpl<>("Users", UserImpl.class);
     }
 
     public static UserFactory getInstance() throws IOException {
