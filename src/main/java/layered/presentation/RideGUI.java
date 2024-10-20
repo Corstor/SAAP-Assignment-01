@@ -55,7 +55,6 @@ public class RideGUI extends JFrame {
                     var result = res.result().bodyAsJsonObject();
                     if (result.getString("result").equals("Ok")) {
                         this.rideId = result.getString("id");
-                        System.out.println(this.rideId);
                     }
                 });
     }
@@ -97,7 +96,7 @@ public class RideGUI extends JFrame {
     }
 
     private void updateUserCredit() {
-        client.get("/api")
+        this.client.get("/api")
                 .addQueryParam("id", userId)
                 .send(res -> {
                     var result = res.result().bodyAsJsonObject();
