@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import layered.business.user.UserFactory;
+import layered.business.user.UserFactoryImpl;
 
 public class PluginApplier {
     private final Map<String, Plugin> pluginRegistry = new HashMap<>();
@@ -27,8 +27,7 @@ public class PluginApplier {
 	}
 
     public void applyEffect(String effectID, String userId) throws IOException {
-		System.out.println(pluginRegistry);
 		Plugin effectPlugin = pluginRegistry.get(effectID);
-		effectPlugin.applyPlugin(UserFactory.getInstance().getUserWithId(userId));
+		effectPlugin.applyPlugin(UserFactoryImpl.getInstance().getUserWithId(userId), UserFactoryImpl.getInstance());
 	}
 }

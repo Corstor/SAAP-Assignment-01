@@ -50,16 +50,18 @@ public class RideGUI extends JFrame {
                 File selectedFile = fileDialog.getSelectedFile();
                 var name = selectedFile.getName().replaceFirst(".jar", "");
                 pluginApplier.loadNewEffect(selectedFile, name);
-                var newPluginButton = new JButton();
+                var newPluginButton = new JButton(name);
                 newPluginButton.addActionListener(e2 -> {
                     try {
                         pluginApplier.applyEffect(name, userId);
+                        this.updateUserCredit();
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
                 });
                 topPanel.add(newPluginButton);
                 pack();
+                setSize(720, 640);
             }
         });
 

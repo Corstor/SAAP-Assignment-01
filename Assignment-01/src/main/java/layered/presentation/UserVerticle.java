@@ -14,10 +14,10 @@ import layered.business.Ride;
 import layered.business.RideFactory;
 
 import layered.business.ebike.EBikeFactory;
-import layered.business.user.UserFactory;
+import layered.business.user.UserFactoryImpl;
 
 public class UserVerticle extends MyVerticle {
-    private UserFactory userFactory;
+    private UserFactoryImpl userFactory;
     private EBikeFactory bikeFactory;
     private RideFactory rideFactory;
 
@@ -27,7 +27,7 @@ public class UserVerticle extends MyVerticle {
         super(port, "User", "user");
         logger = Logger.getLogger("User Verticle");
         try {
-            this.userFactory = UserFactory.getInstance();
+            this.userFactory = UserFactoryImpl.getInstance();
             this.bikeFactory = EBikeFactory.getInstance();
             this.rideFactory = RideFactory.getInstance();
         } catch (IOException e) {

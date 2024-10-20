@@ -5,7 +5,7 @@ import java.io.IOException;
 import layered.business.ebike.EBike;
 import layered.business.ebike.EBikeFactory;
 import layered.business.user.User;
-import layered.business.user.UserFactory;
+import layered.business.user.UserFactoryImpl;
 
 class RideSimulation extends Thread {
     private final User user;
@@ -75,7 +75,7 @@ class RideSimulation extends Thread {
 				lastTimeDecreasedCredit = System.currentTimeMillis();
 
 				try {
-					UserFactory.getInstance().updateUser(this.user);
+					UserFactoryImpl.getInstance().updateUser(this.user);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

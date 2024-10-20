@@ -7,7 +7,7 @@ import java.util.Optional;
 import layered.business.ebike.EBike;
 import layered.business.ebike.EBikeFactory;
 import layered.business.user.User;
-import layered.business.user.UserFactory;
+import layered.business.user.UserFactoryImpl;
 
 class RideImpl implements Ride {
     private final String id;
@@ -20,7 +20,7 @@ class RideImpl implements Ride {
 
     RideImpl(String id, String userId, String bikeId) throws IOException {
         this.id = id;
-        this.user = UserFactory.getInstance().getUserWithId(userId);
+        this.user = UserFactoryImpl.getInstance().getUserWithId(userId);
         this.bike = EBikeFactory.getInstance().getEBikeWithId(bikeId);
 
         this.startedDate = new Date();
