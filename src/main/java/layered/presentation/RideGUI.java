@@ -15,14 +15,12 @@ import layered.business.ebike.EBikeImpl;
 
 public class RideGUI extends JFrame {
     private final VisualiserPanel centralPanel;
-    private final List<EBike> bikes;
     private final String userId;
     private final WebClient client;
     private String rideId = null;
 
     public RideGUI(String userId, int credit, WebClient client, List<EBike> bikes) {
         this.client = client;
-        this.bikes = bikes;
         this.userId = userId;
 
         final JButton startRideButton = new JButton("Start a ride");
@@ -44,7 +42,7 @@ public class RideGUI extends JFrame {
     }
 
     public List<EBike> getBikes() {
-        return this.bikes;
+        return this.centralPanel.bikes;
     }
 
     public void startNewRide(EBike bike) {
@@ -74,7 +72,6 @@ public class RideGUI extends JFrame {
                             updateBikes();
                             updateUserCredit();
                             rideId = null;
-                            this.centralPanel.refresh();
                         }
                     });
         }
@@ -91,6 +88,7 @@ public class RideGUI extends JFrame {
                     List<EBike> bikes = objectMapper
                             .readValue(result2.getJsonArray("bikes").toString(), type);
                     this.centralPanel.bikes = bikes;
+                    this.centralPanel.refresh();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -105,6 +103,7 @@ public class RideGUI extends JFrame {
                     var result = res.result().bodyAsJsonObject();
                     if (result.getString("result").equals("Ok")) {
                         this.centralPanel.credit = result.getInteger("credit");
+                        this.centralPanel.refresh();
                     }
                 });
     }
