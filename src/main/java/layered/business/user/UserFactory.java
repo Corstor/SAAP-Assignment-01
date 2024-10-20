@@ -45,4 +45,8 @@ public class UserFactory {
         }
         return user.get();
     }
+
+    public void updateUser(User user) throws IOException {
+        this.userStore.saveValue(user.getId(), (UserImpl) user);
+    }
 }

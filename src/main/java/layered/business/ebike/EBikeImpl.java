@@ -98,10 +98,9 @@ public class EBikeImpl implements EBike {
     }
 
     public String toString() {
-		return "{ id: " + this.id 
-            + ", loc: " + this.location 
-            + ", batteryLevel: " + this.batteryLevel
-            + ", state: " + this.state 
-            + " }";
+		return "EBike: " + this.id 
+            + ", location: " + this.location 
+            + ", battery level: " + this.batteryLevel
+            + ", state: " + this.state;
 	}
 }

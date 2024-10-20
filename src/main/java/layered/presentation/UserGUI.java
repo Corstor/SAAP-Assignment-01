@@ -11,8 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.*;
 
 import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -53,63 +51,57 @@ public class UserGUI extends JFrame {
         add(inputPanel, BorderLayout.NORTH);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        this.createButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String id = idField.getText();
-                JsonObject request = new JsonObject();
-                request.put("id", id);
+        this.createButton.addActionListener(e -> {
+            String id = idField.getText();
+            JsonObject request = new JsonObject();
+            request.put("id", id);
 
-                client.post("/api/register")
-                        .sendBuffer(Buffer.buffer(request.encode()), res -> {
-                            var result = res.result().bodyAsJsonObject();
-                            if (result.getString("result").equals("Ok")) {
-                                messageField.setText("User created!");
-                            } else {
-                                messageField.setText(result.getString("result"));
-                            }
-                        });
-            }
+            client.post("/api/register")
+                    .sendBuffer(Buffer.buffer(request.encode()), res -> {
+                        var result = res.result().bodyAsJsonObject();
+                        if (result.getString("result").equals("Ok")) {
+                            messageField.setText("User created!");
+                        } else {
+                            messageField.setText(result.getString("result"));
+                        }
+                    });
         });
 
-        this.loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String id = idField.getText();
-                client.get("/api")
-                        .addQueryParam("id", id)
-                        .send(res -> {
-                            var result = res.result().bodyAsJsonObject();
-                            if (result.getString("result").equals("Ok")) {
-                                createRideGUI(id, result);
-                            } else {
-                                messageField.setText(result.getString("result"));
-                            }
-                        });
-            }
-
-            private void createRideGUI(String id, JsonObject result) {
-                client.get("/api/bikes").send(res2 -> {
-                    var result2 = res2.result().bodyAsJsonObject();
-                    if (result2.getString("result").equals("Ok")) {
-                        var objectMapper = new ObjectMapper();
-                        var type = objectMapper.getTypeFactory().constructCollectionType(List.class,
-                                EBikeImpl.class);
-                        try {
-                            List<EBike> bikes = objectMapper.readValue(result2.getJsonArray("bikes").toString(), type);
-
-                            new RideGUI(id, result.getInteger("credit"), client, bikes);
-                            dispose();
-                        } catch (Exception e2) {
-                            e2.printStackTrace();
+        this.loginButton.addActionListener(e -> {
+            String id = idField.getText();
+            client.get("/api")
+                    .addQueryParam("id", id)
+                    .send(res -> {
+                        var result = res.result().bodyAsJsonObject();
+                        if (result.getString("result").equals("Ok")) {
+                            createRideGUI(id, result);
+                        } else {
+                            messageField.setText(result.getString("result"));
                         }
-                    }
-                });
-            }
+                    });
         });
 
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+    }
+
+    private void createRideGUI(String id, JsonObject result) {
+        client.get("/api/bikes").send(res2 -> {
+            var result2 = res2.result().bodyAsJsonObject();
+            if (result2.getString("result").equals("Ok")) {
+                var objectMapper = new ObjectMapper();
+                var type = objectMapper.getTypeFactory().constructCollectionType(List.class,
+                        EBikeImpl.class);
+                try {
+                    List<EBike> bikes = objectMapper.readValue(result2.getJsonArray("bikes").toString(), type);
+
+                    new RideGUI(id, result.getInteger("credit"), client, bikes);
+                    dispose();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+            }
+        });
     }
 }

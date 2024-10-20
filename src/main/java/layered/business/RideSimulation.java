@@ -1,7 +1,11 @@
 package layered.business;
 
+import java.io.IOException;
+
 import layered.business.ebike.EBike;
+import layered.business.ebike.EBikeFactory;
 import layered.business.user.User;
+import layered.business.user.UserFactory;
 
 class RideSimulation extends Thread {
     private final User user;
@@ -57,12 +61,24 @@ class RideSimulation extends Thread {
 				elapsedTimeSinceLastChangeDir = System.currentTimeMillis();
 			}
 
+			try {
+				EBikeFactory.getInstance().updateEBike(this.bike);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
             /* update credit */
 			
 			var elapsedTimeSinceLastDecredit = System.currentTimeMillis() - lastTimeDecreasedCredit;
 			if (elapsedTimeSinceLastDecredit > 1000) {
 				this.user.decreaseCredit(1);
 				lastTimeDecreasedCredit = System.currentTimeMillis();
+
+				try {
+					UserFactory.getInstance().updateUser(this.user);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 
             try {

@@ -53,4 +53,8 @@ public class EBikeFactory {
     public List<EBike> getEBikes() throws IOException {
         return List.copyOf(this.bikesStore.loadAllValues().values());
     }
+
+    public void updateEBike(EBike bike) throws IOException {
+        this.bikesStore.saveValue(bike.getId(), (EBikeImpl)  bike);
+    }
 }

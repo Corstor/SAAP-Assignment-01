@@ -11,13 +11,16 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.StaticHandler;
 import layered.business.Ride;
-import layered.business.RideImpl;
+import layered.business.RideFactory;
+
 import layered.business.ebike.EBikeFactory;
 import layered.business.user.UserFactory;
 
 public class UserVerticle extends MyVerticle {
     private UserFactory userFactory;
     private EBikeFactory bikeFactory;
+    private RideFactory rideFactory;
+
     private final List<Ride> rides = new LinkedList<>();
 
     public UserVerticle(final int port) {
@@ -26,6 +29,7 @@ public class UserVerticle extends MyVerticle {
         try {
             this.userFactory = UserFactory.getInstance();
             this.bikeFactory = EBikeFactory.getInstance();
+            this.rideFactory = RideFactory.getInstance();
         } catch (IOException e) {
             logger.log(Level.WARNING, e.getMessage());
         }
@@ -63,9 +67,10 @@ public class UserVerticle extends MyVerticle {
         JsonObject reply = new JsonObject();
 
         try {
-            Ride ride = new RideImpl(request.getString("id"), request.getString("userId"), request.getString("bikeId"));
+            Ride ride = rideFactory.createRide(request.getString("userId"), request.getString("bikeId"));
             rides.add(ride);
             ride.start();
+            reply.put("id", ride.getId());
             reply.put("result", "Ok");
         } catch (Exception e) {
             logger.log(Level.WARNING, e.getMessage());
@@ -87,6 +92,8 @@ public class UserVerticle extends MyVerticle {
             reply.put("bikeId", ride.getBikeId());
             reply.put("startingDate", ride.getStartedDate().toString());
             reply.put("endDate", ride.getEndDate().toString());
+            reply.put("result", "Ok");
+            rides.remove(ride);
         } catch (Exception e) {
             logger.log(Level.WARNING, e.getMessage());
             reply.put("result", "Error: " + e.getMessage());
