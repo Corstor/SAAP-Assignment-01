@@ -1,9 +1,10 @@
-package clean.infrastructure;
+package clean.infrastructure.GUI;
 
 import javax.swing.*;
 
 import clean.application.extension.PluginApplier;
 import clean.domain.ebike.EBikeSnapshot;
+import clean.infrastructure.Pair;
 
 import java.awt.*;
 import java.util.Map;

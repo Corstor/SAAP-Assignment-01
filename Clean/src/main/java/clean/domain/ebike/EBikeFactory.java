@@ -8,9 +8,14 @@ import clean.domain.Repository;
 
 public class EBikeFactory {
     private final Repository<EBikeSnapshot> bikeRepository;
+    private final List<EBike> bikes;
 
     public EBikeFactory(Repository<EBikeSnapshot> bikeRepository) throws IOException {
         this.bikeRepository = bikeRepository;
+        this.bikes = this.bikeRepository.loadAllValues().entrySet().stream().map(e -> {
+            EBike bike = new EBikeImpl(e.getKey(), e.getValue());
+            return bike;
+        }).toList();
     }
 
     public EBike createEBike(String id) throws IOException {
@@ -18,6 +23,7 @@ public class EBikeFactory {
 
         var bike = new EBikeImpl(id);
         this.bikeRepository.saveValue(id, bike.getEBikeSnapshot());
+        this.bikes.add(bike);
 
         return bike;
     }
@@ -27,26 +33,30 @@ public class EBikeFactory {
 
         var bike = new EBikeImpl(id);
         bike.updateLocation(new P2d(x, y));
+
         this.bikeRepository.saveValue(id, bike.getEBikeSnapshot());
+        this.bikes.add(bike);
 
         return bike;
     }
-    
+
     private void checkBikeExistance(String id) throws IOException {
-        if (this.bikeRepository.getValueFromIdOptional(id).isPresent()) {
+        if (this.bikes.stream().filter(e -> e.getId().equals(id)).findFirst().isPresent()) {
             throw new EBikeAlreadyCreatedException(id);
         }
     }
 
     public EBike getEBikeWithId(String id) throws IOException {
-        var bike = this.bikeRepository.getValueFromIdOptional(id);
+        var bike = this.bikes.stream().filter(e -> e.getId().equals(id)).findFirst();
+
         if (bike.isEmpty()) {
             throw new EBikeDoesNotExists(id);
         }
-        return new EBikeImpl(id, bike.get());
+
+        return bike.get();
     }
 
-    public List<EBikeSnapshot> getEBikeSnapshots() throws IOException {
-        return List.copyOf(this.bikeRepository.loadAllValues().values());
+    public List<EBike> getEBikes() throws IOException {
+        return List.copyOf(this.bikes);
     }
 }

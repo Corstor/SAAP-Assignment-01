@@ -1,4 +1,4 @@
-package clean.infrastructure;
+package clean.infrastructure.storage;
 
 import java.io.IOException;
 import java.util.Map;
@@ -20,10 +20,8 @@ public class UserStore extends AbstractStore<UserSnapshot> implements UsersListe
 
     @Override
     public void userCreditChanged(String userId, UserSnapshot user) {
-        this.values.put(userId, user);
-
         try {
-            this.saveAllValues();
+            this.saveValue(userId, user);
         } catch (IOException e) {
             e.printStackTrace();
         }

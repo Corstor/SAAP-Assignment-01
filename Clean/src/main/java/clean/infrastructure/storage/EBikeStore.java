@@ -1,4 +1,4 @@
-package clean.infrastructure;
+package clean.infrastructure.storage;
 
 import java.io.IOException;
 import java.util.Map;
@@ -19,10 +19,8 @@ public class EBikeStore extends AbstractStore<EBikeSnapshot> implements EBikeLis
 
     @Override
     public void bikeChanged(String bikeId, EBikeSnapshot bike) {
-        this.values.put(bikeId, bike);
-
         try {
-            this.saveAllValues();
+            this.saveValue(bikeId, bike);
         } catch (IOException e) {
             e.printStackTrace();
         }

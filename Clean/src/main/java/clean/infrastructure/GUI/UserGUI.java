@@ -1,4 +1,4 @@
-package clean.infrastructure;
+package clean.infrastructure.GUI;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;

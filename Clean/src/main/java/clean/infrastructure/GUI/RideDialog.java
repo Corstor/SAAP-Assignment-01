@@ -1,4 +1,4 @@
-package clean.infrastructure;
+package clean.infrastructure.GUI;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
 import clean.domain.ebike.EBikeSnapshot;
+import clean.infrastructure.Pair;
 
 public class RideDialog extends JDialog {
     public RideDialog(RideGUI rideGUI) {

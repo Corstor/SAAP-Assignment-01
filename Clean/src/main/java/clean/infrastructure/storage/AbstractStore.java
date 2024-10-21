@@ -1,10 +1,9 @@
-package clean.infrastructure;
+package clean.infrastructure.storage;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,16 +44,5 @@ public abstract class AbstractStore<X> implements Repository<X> {
                 value -> !value.getKey().equals(id)
             ).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
         this.saveAllValues();
-    }
-
-    public X getValueFromId(String id) throws IOException {
-        return getValueFromIdOptional(id).get();
-    }
-
-    public Optional<X> getValueFromIdOptional(String id) throws IOException {
-        this.values = loadAllValues();
-        return values.entrySet().stream()
-            .filter(value -> value.getKey().equals(id))
-            .findFirst().map(e -> e.getValue());
     }
 }
