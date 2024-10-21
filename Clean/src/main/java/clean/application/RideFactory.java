@@ -2,23 +2,24 @@ package clean.application;
 
 import java.io.IOException;
 
+import clean.domain.ebike.EBikeFactory;
+import clean.domain.user.UserFactory;
+
 public class RideFactory {
-    private static RideFactory instance;
     private int id;
+    private final UserFactory userFactory;
+    private final EBikeFactory bikeFactory;
 
-    private RideFactory() {
+    public RideFactory(UserFactory userFactory, EBikeFactory bikeFactory) {
         this.id = 0;
-    }
-
-    public static RideFactory getInstance() {
-        if (instance == null) {
-            instance = new RideFactory();
-        }
-        return instance;
+        this.userFactory = userFactory;
+        this.bikeFactory = bikeFactory;
     }
 
     public Ride createRide(String userId, String bikeId) throws IOException {
-        return new RideImpl(realId(this.id++), userId, bikeId);
+        var user = userFactory.getUserWithId(bikeId);
+        var bike = bikeFactory.getEBikeWithId(bikeId);
+        return new RideImpl(realId(this.id++), user, bike);
     }
 
     public String getId() {

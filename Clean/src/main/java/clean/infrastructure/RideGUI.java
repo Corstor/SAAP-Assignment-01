@@ -2,14 +2,11 @@ package clean.infrastructure;
 
 import javax.swing.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import clean.application.extension.PluginApplier;
-import clean.domain.ebike.EBike;
-import clean.domain.ebike.EBikeImpl;
+import clean.domain.ebike.EBikeSnapshot;
 
 import java.awt.*;
-import java.util.List;
+import java.util.Map;
 import java.io.*;
 
 import io.vertx.core.buffer.Buffer;
@@ -23,7 +20,7 @@ public class RideGUI extends JFrame {
     private String rideId = null;
     private final PluginApplier pluginApplier;
 
-    public RideGUI(String userId, int credit, WebClient client, List<EBike> bikes) {
+    public RideGUI(String userId, int credit, WebClient client, Map<String, EBikeSnapshot> bikes) {
         this.client = client;
         this.userId = userId;
         this.pluginApplier = new PluginApplier();
@@ -55,7 +52,6 @@ public class RideGUI extends JFrame {
                 newPluginButton.addActionListener(e2 -> {
                     try {
                         pluginApplier.applyEffect(name, userId);
-                        this.updateUserCredit();
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
@@ -70,14 +66,14 @@ public class RideGUI extends JFrame {
         this.setVisible(true);
     }
 
-    public List<EBike> getBikes() {
+    public Map<String, EBikeSnapshot> getBikes() {
         return this.centralPanel.bikes;
     }
 
-    public void startNewRide(EBike bike) {
+    public void startNewRide(Pair<String, EBikeSnapshot> bike) {
         JsonObject request = new JsonObject();
         request.put("userId", userId);
-        request.put("bikeId", bike.getId());
+        request.put("bikeId", bike.first());
 
         client.post("/api/ride/start")
                 .sendBuffer(Buffer.buffer(request.encode()), res -> {
@@ -97,53 +93,20 @@ public class RideGUI extends JFrame {
                     .sendBuffer(Buffer.buffer(request.encode()), res -> {
                         var result = res.result().bodyAsJsonObject();
                         if (result.getString("result").equals("Ok")) {
-                            updateBikes();
-                            updateUserCredit();
                             rideId = null;
                         }
                     });
         }
     }
 
-    private void updateBikes() {
-        this.client.get("/api/bikes").send(res2 -> {
-            var result2 = res2.result().bodyAsJsonObject();
-            if (result2.getString("result").equals("Ok")) {
-                var objectMapper = new ObjectMapper();
-                var type = objectMapper.getTypeFactory().constructCollectionType(List.class,
-                        EBikeImpl.class);
-                try {
-                    List<EBike> bikes = objectMapper
-                            .readValue(result2.getJsonArray("bikes").toString(), type);
-                    this.centralPanel.bikes = bikes;
-                    this.centralPanel.refresh();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    private void updateUserCredit() {
-        this.client.get("/api")
-                .addQueryParam("id", userId)
-                .send(res -> {
-                    var result = res.result().bodyAsJsonObject();
-                    if (result.getString("result").equals("Ok")) {
-                        this.centralPanel.credit = result.getInteger("credit");
-                        this.centralPanel.refresh();
-                    }
-                });
-    }
-
     static class VisualiserPanel extends JPanel {
         private long dx;
         private long dy;
-        private List<EBike> bikes;
+        private Map<String, EBikeSnapshot> bikes;
         private final String id;
         private int credit;
 
-        VisualiserPanel(int w, int h, List<EBike> bikes, String id, int credit) {
+        VisualiserPanel(int w, int h, Map<String, EBikeSnapshot> bikes, String id, int credit) {
             setSize(w, h);
             dx = w / 2 - 20;
             dy = h / 2 - 20;
@@ -161,14 +124,14 @@ public class RideGUI extends JFrame {
                     RenderingHints.VALUE_RENDER_QUALITY);
             g2.clearRect(0, 0, this.getWidth(), this.getHeight());
 
-            var it = bikes.iterator();
+            var it = bikes.entrySet().iterator();
             while (it.hasNext()) {
                 var b = it.next();
-                var p = b.getEBikeSnapshot().location();
+                var p = b.getValue().location();
                 int x0 = (int) (dx + p.getX());
                 int y0 = (int) (dy - p.getY());
                 g2.drawOval(x0, y0, 20, 20);
-                g2.drawString(b.getId(), x0, y0 + 35);
+                g2.drawString(b.getKey(), x0, y0 + 35);
                 g2.drawString("(" + (int) p.getX() + "," + (int) p.getY() + ")", x0, y0 + 50);
             }
 

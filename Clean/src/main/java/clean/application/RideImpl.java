@@ -11,19 +11,19 @@ class RideImpl implements Ride {
     private final String id;
     private final Date startedDate;
     private Optional<Date> endDate;
-    // private final User user;
-    // private final EBike bike;
-    // private final RideSimulation rideSimulation;
+    private final User user;
+    private final EBike bike;
+    private final RideSimulation rideSimulation;
     private boolean onGoing;
 
-    RideImpl(String id, String userId, String bikeId) throws IOException {
+    RideImpl(String id, User user, EBike bike) throws IOException {
         this.id = id;
-        // this.user = UserFactoryImpl.getInstance().getUserWithId(userId);
-        // this.bike = EBikeFactory.getInstance().getEBikeWithId(bikeId);
+        this.user = user;
+        this.bike = bike;
 
         this.startedDate = new Date();
         this.endDate = Optional.empty();
-        // this.rideSimulation = new RideSimulation(this.user, this.bike);
+        this.rideSimulation = new RideSimulation(this.user, this.bike);
     }
 
     @Override
@@ -49,13 +49,13 @@ class RideImpl implements Ride {
     @Override
     public void start() {
         onGoing = true;
-        // this.rideSimulation.start();
+        this.rideSimulation.start();
     }
 
     @Override
     public void end() {
         endDate = Optional.of(new Date());
-        // this.rideSimulation.stopSimulation();
+        this.rideSimulation.stopSimulation();
         onGoing = false;
     }
 

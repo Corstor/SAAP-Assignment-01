@@ -22,6 +22,10 @@ class UserImpl implements User {
         this(id, 0);
     }
 
+    UserImpl(final String id, final UserSnapshot snapshot) {
+        this(id, snapshot.credit());
+    }
+
     @Override
     public String getId() {
         return this.id;

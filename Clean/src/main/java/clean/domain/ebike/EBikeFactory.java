@@ -38,12 +38,12 @@ public class EBikeFactory {
         }
     }
 
-    public EBikeSnapshot getEBikeWithId(String id) throws IOException {
+    public EBike getEBikeWithId(String id) throws IOException {
         var bike = this.bikeRepository.getValueFromIdOptional(id);
         if (bike.isEmpty()) {
             throw new EBikeDoesNotExists(id);
         }
-        return bike.get();
+        return new EBikeImpl(id, bike.get());
     }
 
     public List<EBikeSnapshot> getEBikeSnapshots() throws IOException {

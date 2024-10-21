@@ -35,13 +35,13 @@ public class UserFactory {
         }
     }
 
-    public UserSnapshot getUserWithId(String id) throws IOException {
+    public User getUserWithId(String id) throws IOException {
         var user = this.userRepository.getValueFromIdOptional(id);
 
         if (user.isEmpty()) {
             throw new UserDoesNotExists(id);
         }
 
-        return user.get();
+        return new UserImpl(id, user.get());
     }
 }

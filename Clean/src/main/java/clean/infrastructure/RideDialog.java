@@ -10,7 +10,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
-import clean.domain.ebike.EBike;
+import clean.domain.ebike.EBikeSnapshot;
 
 public class RideDialog extends JDialog {
     public RideDialog(RideGUI rideGUI) {
@@ -19,10 +19,10 @@ public class RideDialog extends JDialog {
         JButton startButton = new JButton("Start ride");
         JButton cancelButton = new JButton("Cancel");
 
-        DefaultListModel<EBike> defaultList = new DefaultListModel<>();
-        defaultList.addAll(rideGUI.getBikes());
+        DefaultListModel<Pair<String, EBikeSnapshot>> defaultList = new DefaultListModel<>();
+        defaultList.addAll(rideGUI.getBikes().entrySet().stream().map(e -> new Pair<String, EBikeSnapshot>(e.getKey(), e.getValue())).toList());
         
-        JList<EBike> list = new JList<>(defaultList);
+        JList<Pair<String, EBikeSnapshot>> list = new JList<>(defaultList);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
         JPanel inputPanel = new JPanel(new GridLayout(3, 4, 10, 10));

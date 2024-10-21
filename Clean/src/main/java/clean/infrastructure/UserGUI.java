@@ -8,12 +8,11 @@ import javax.swing.JTextField;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import clean.domain.ebike.EBike;
-import clean.domain.ebike.EBikeImpl;
+import clean.domain.ebike.EBikeSnapshot;
 
 import java.awt.*;
 
-import java.util.List;
+import java.util.Map;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -92,10 +91,10 @@ public class UserGUI extends JFrame {
             var result2 = res2.result().bodyAsJsonObject();
             if (result2.getString("result").equals("Ok")) {
                 var objectMapper = new ObjectMapper();
-                var type = objectMapper.getTypeFactory().constructCollectionType(List.class,
-                        EBikeImpl.class);
+                var type = objectMapper.getTypeFactory().constructMapType(Map.class,
+                        String.class, EBikeSnapshot.class);
                 try {
-                    List<EBike> bikes = objectMapper.readValue(result2.getJsonArray("bikes").toString(), type);
+                    Map<String, EBikeSnapshot> bikes = objectMapper.readValue(result2.getJsonArray("bikes").toString(), type);
 
                     new RideGUI(id, result.getInteger("credit"), client, bikes);
                     dispose();

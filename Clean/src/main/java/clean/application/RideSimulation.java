@@ -59,24 +59,12 @@ class RideSimulation extends Thread {
 				elapsedTimeSinceLastChangeDir = System.currentTimeMillis();
 			}
 
-			// try {
-			// 	EBikeFactory.getInstance().updateEBike(this.bike);
-			// } catch (IOException e) {
-			// 	e.printStackTrace();
-			// }
-
             /* update credit */
 			
 			var elapsedTimeSinceLastDecredit = System.currentTimeMillis() - lastTimeDecreasedCredit;
 			if (elapsedTimeSinceLastDecredit > 1000) {
 				this.user.decreaseCredit(1);
 				lastTimeDecreasedCredit = System.currentTimeMillis();
-
-				// try {
-				// 	UserFactoryImpl.getInstance().updateUser(this.user);
-				// } catch (IOException e) {
-				// 	e.printStackTrace();
-				// }
 			}
 
             try {

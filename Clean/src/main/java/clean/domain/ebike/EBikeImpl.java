@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import clean.domain.P2d;
 import clean.domain.V2d;
 
-public class EBikeImpl implements EBike {
+class EBikeImpl implements EBike {
 
     private final String id;
     private EBikeState state;
@@ -21,7 +21,7 @@ public class EBikeImpl implements EBike {
     private final List<EBikeListener> listeners;
 
     @JsonCreator
-    public EBikeImpl(@JsonProperty("id") final String id) {
+    EBikeImpl(@JsonProperty("id") final String id) {
         this.id = id;
         this.state = EBikeState.AVAILABLE;
         this.location = new P2d(0, 0);
@@ -29,6 +29,16 @@ public class EBikeImpl implements EBike {
         this.batteryLevel = 100;
         this.speed = 0;
 
+        this.listeners = new LinkedList<>();
+    }
+
+    EBikeImpl(final String id, final EBikeSnapshot snapshot) {
+        this.id = id;
+        this.state = snapshot.state();
+        this.location = snapshot.location();
+        this.direction = snapshot.direction();
+        this.batteryLevel = snapshot.batteryLevel();
+        this.speed = snapshot.speed();
         this.listeners = new LinkedList<>();
     }
 
