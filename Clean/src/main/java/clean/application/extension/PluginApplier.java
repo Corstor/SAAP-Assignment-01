@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import clean.application.State;
 
-public class PluginApplier<X> {
-    private final Map<String, Plugin<X>> pluginRegistry = new HashMap<>();
+
+public class PluginApplier {
+    private final Map<String, Plugin> pluginRegistry = new HashMap<>();
 
     public void loadNewEffect(File effectPluginFile, String effectID) {
 		try {
@@ -21,12 +23,12 @@ public class PluginApplier<X> {
         var loader = new PluginClassLoader(libFile.getAbsolutePath());
         String className = "layered.business.extension." + pluginID;
         Class<?> pluginClass = loader.loadClass(className);
-        Plugin<X> effectPlugin = (Plugin<X>) pluginClass.getDeclaredConstructor().newInstance();
+        Plugin effectPlugin = (Plugin) pluginClass.getDeclaredConstructor().newInstance();
 		pluginRegistry.put(pluginID, effectPlugin);
 	}
 
-    public void applyEffect(String effectID, X value) throws IOException {
-		Plugin<X> effectPlugin = pluginRegistry.get(effectID);
-		effectPlugin.applyPlugin(value);
+    public void applyEffect(String effectID, State state) throws IOException {
+		Plugin effectPlugin = pluginRegistry.get(effectID);
+		effectPlugin.applyPlugin(state);
 	}
 }

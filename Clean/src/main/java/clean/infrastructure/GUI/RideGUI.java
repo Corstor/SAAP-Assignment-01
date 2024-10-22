@@ -18,12 +18,12 @@ public class RideGUI extends JFrame {
     private final String userId;
     private final WebClient client;
     private String rideId = null;
-    private final PluginApplier<? super Object> pluginApplier;
+    private final PluginApplier pluginApplier;
 
     public RideGUI(String userId, int credit, WebClient client, List<EBikeSnapshot> bikes) {
         this.client = client;
         this.userId = userId;
-        this.pluginApplier = new PluginApplier<>();
+        this.pluginApplier = new PluginApplier();
 
         final JButton startRideButton = new JButton("Start a ride");
         final JButton addPlugin = new JButton("Add plugin");
@@ -51,7 +51,7 @@ public class RideGUI extends JFrame {
                 var newPluginButton = new JButton(name);
                 newPluginButton.addActionListener(e2 -> {
                     // try {
-                    //     // userPluginApplier.applyEffect();
+                    //     pluginApplier.applyEffect(name, new StateImpl(, bikes));
                     // } catch (IOException e1) {
                     //     e1.printStackTrace();
                     // }
