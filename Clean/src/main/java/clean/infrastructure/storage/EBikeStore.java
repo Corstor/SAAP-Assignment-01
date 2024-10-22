@@ -1,7 +1,7 @@
 package clean.infrastructure.storage;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -13,14 +13,14 @@ public class EBikeStore extends AbstractStore<EBikeSnapshot> implements EBikeLis
         super("EBikes.json");
     }
 
-    public Map<String, EBikeSnapshot> loadAllValues() throws IOException {
-        return objectMapper.readValue(jsonFile, new TypeReference<Map<String, EBikeSnapshot>>() {});
+    public List<EBikeSnapshot> loadAllValues() throws IOException {
+        return objectMapper.readValue(jsonFile, new TypeReference<List<EBikeSnapshot>>() {});
     }
 
     @Override
-    public void bikeChanged(String bikeId, EBikeSnapshot bike) {
+    public void bikeChanged(EBikeSnapshot bike) {
         try {
-            this.saveValue(bikeId, bike);
+            this.saveValue(bike);
         } catch (IOException e) {
             e.printStackTrace();
         }

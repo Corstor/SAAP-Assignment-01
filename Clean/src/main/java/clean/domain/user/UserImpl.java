@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 class UserImpl implements User {
     private final String id;
     private int credit;
-    private final List<UsersListener> listeners;
+    private final List<UserListener> listeners;
 
     @JsonCreator
     UserImpl(@JsonProperty("id") final String id, @JsonProperty("credit") final int credit) {
@@ -22,13 +22,8 @@ class UserImpl implements User {
         this(id, 0);
     }
 
-    UserImpl(final String id, final UserSnapshot snapshot) {
-        this(id, snapshot.credit());
-    }
-
-    @Override
-    public String getId() {
-        return this.id;
+    UserImpl(final UserSnapshot snapshot) {
+        this(snapshot.id(), snapshot.credit());
     }
 
     @Override
@@ -47,7 +42,7 @@ class UserImpl implements User {
     }
 
     private void updateListeners() {
-        this.listeners.forEach(e -> e.userCreditChanged(id, this.getUserSnapshot()));
+        this.listeners.forEach(e -> e.userCreditChanged(this.getUserSnapshot()));
     }
 
     @Override
@@ -56,12 +51,12 @@ class UserImpl implements User {
     }
 
     @Override
-    public void addUserListener(UsersListener l) {
+    public void addUserListener(UserListener l) {
         this.listeners.add(l);
     }
 
     @Override
     public UserSnapshot getUserSnapshot() {
-        return new UserSnapshot(credit);
+        return new UserSnapshot(id, credit);
     }
 }

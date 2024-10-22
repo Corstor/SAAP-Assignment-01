@@ -4,7 +4,6 @@ import clean.domain.P2d;
 import clean.domain.V2d;
 
 public interface EBike {
-    String getId();
     EBikeSnapshot getEBikeSnapshot();
     
     void rechargeBattery();

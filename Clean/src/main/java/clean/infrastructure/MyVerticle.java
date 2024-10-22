@@ -1,4 +1,4 @@
-package clean.application;
+package clean.infrastructure;
 
 
 import java.io.IOException;

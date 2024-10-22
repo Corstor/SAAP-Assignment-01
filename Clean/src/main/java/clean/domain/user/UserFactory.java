@@ -2,6 +2,8 @@ package clean.domain.user;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 import clean.domain.Repository;
 
@@ -11,46 +13,49 @@ public class UserFactory {
 
     public UserFactory(Repository<UserSnapshot> uRepository) throws IOException {
         this.userRepository = uRepository;
-        this.users = this.userRepository.loadAllValues().entrySet().stream()
+        this.users = this.userRepository.loadAllValues().stream()
                 .map(e -> {
-                    User user = new UserImpl(e.getKey(), e.getValue());
+                    User user = new UserImpl(e);
                     return user;
                 }).toList();
     }
 
     public User createUser(String id) throws IOException {
-        checkUserExistance(id);
+        checkUserExistance(id, (user) -> user.isPresent(), new UserAlreadyCreatedException(id));
 
         var user = new UserImpl(id);
-        this.userRepository.saveValue(id, user.getUserSnapshot());
+        this.userRepository.saveValue(user.getUserSnapshot());
         this.users.add(user);
 
         return user;
     }
 
     public User createUser(String id, int credit) throws IOException {
-        checkUserExistance(id);
+        checkUserExistance(id, (user) -> user.isPresent(), new UserAlreadyCreatedException(id));
 
         var user = new UserImpl(id, credit);
-        this.userRepository.saveValue(id, user.getUserSnapshot());
+        this.userRepository.saveValue(user.getUserSnapshot());
         this.users.add(user);
 
         return user;
     }
 
-    private void checkUserExistance(String id) throws IOException {
-        if (this.users.stream().filter(e -> e.getId().equals(id)).findFirst().isPresent()) {
-            throw new UserAlreadyCreatedException(id);
+    private Optional<User> checkUserExistance(String id, Function<Optional<User>, Boolean> consumer,
+            IllegalArgumentException exception) throws IOException {
+        var user = this.users.stream().filter(e -> e.getUserSnapshot().id().equals(id)).findFirst();
+        if (consumer.apply(user)) {
+            throw exception;
         }
+        return user;
     }
 
     public User getUserWithId(String id) throws IOException {
-        var user = this.users.stream().filter(e -> e.getId().equals(id)).findFirst();
+        return checkUserExistance(id, (user) -> user.isEmpty(), new UserDoesNotExists(id)).get();
+    }
 
-        if (user.isEmpty()) {
-            throw new UserDoesNotExists(id);
-        }
-
-        return user.get();
+    public void deleteUser(String id) throws IOException {
+        var user = checkUserExistance(id, (u) -> u.isEmpty(), new UserDoesNotExists(id)).get();
+        this.userRepository.deleteValue(user.getUserSnapshot());
+        this.users.remove(user);
     }
 }

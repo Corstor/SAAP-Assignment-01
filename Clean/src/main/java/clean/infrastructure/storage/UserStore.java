@@ -1,27 +1,27 @@
 package clean.infrastructure.storage;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import clean.domain.user.UserSnapshot;
-import clean.domain.user.UsersListener;
+import clean.domain.user.UserListener;
 
-public class UserStore extends AbstractStore<UserSnapshot> implements UsersListener {
+public class UserStore extends AbstractStore<UserSnapshot> implements UserListener {
     public UserStore() throws IOException {
         super("Users.json");
     }
 
-    public Map<String, UserSnapshot> loadAllValues() throws IOException {
-        return objectMapper.readValue(jsonFile, new TypeReference<Map<String, UserSnapshot>>() {
+    public List<UserSnapshot> loadAllValues() throws IOException {
+        return objectMapper.readValue(jsonFile, new TypeReference<List<UserSnapshot>>() {
         });
     }
 
     @Override
-    public void userCreditChanged(String userId, UserSnapshot user) {
+    public void userCreditChanged(UserSnapshot user) {
         try {
-            this.saveValue(userId, user);
+            this.saveValue(user);
         } catch (IOException e) {
             e.printStackTrace();
         }

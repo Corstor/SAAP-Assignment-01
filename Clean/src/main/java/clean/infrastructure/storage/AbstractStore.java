@@ -2,9 +2,8 @@ package clean.infrastructure.storage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -12,13 +11,13 @@ import clean.domain.Repository;
 
 public abstract class AbstractStore<X> implements Repository<X> {
     protected final File jsonFile;
-    protected Map<String, X> values;
+    protected List<X> values;
     protected final ObjectMapper objectMapper;
 
     public AbstractStore(String name) throws IOException {
         this.jsonFile = new File(name);
         this.objectMapper = new ObjectMapper();
-        this.values = new HashMap<>();
+        this.values = new LinkedList<>();
 
         //Create a new file if it does not exists
         if (jsonFile.createNewFile()) {
@@ -26,23 +25,20 @@ public abstract class AbstractStore<X> implements Repository<X> {
         } 
     }
 
-    public abstract Map<String, X> loadAllValues() throws IOException;
+    public abstract List<X> loadAllValues() throws IOException;
 
     protected void saveAllValues() throws IOException {
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, values);
     }
 
-    public void saveValue(String id, X value) throws IOException {
+    public void saveValue(X value) throws IOException {
         this.values = loadAllValues();
-        this.values.put(id, value);
+        this.values.add(value);
         this.saveAllValues();
     }
 
-    public void deleteValue(String id) throws IOException {
-        this.values = loadAllValues().entrySet().stream()
-            .filter(
-                value -> !value.getKey().equals(id)
-            ).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+    public void deleteValue(X value) throws IOException {
+        this.values.remove(value);
         this.saveAllValues();
     }
 }

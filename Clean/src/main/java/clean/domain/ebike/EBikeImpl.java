@@ -32,8 +32,8 @@ class EBikeImpl implements EBike {
         this.listeners = new LinkedList<>();
     }
 
-    EBikeImpl(final String id, final EBikeSnapshot snapshot) {
-        this.id = id;
+    EBikeImpl(final EBikeSnapshot snapshot) {
+        this.id = snapshot.id();
         this.state = snapshot.state();
         this.location = snapshot.location();
         this.direction = snapshot.direction();
@@ -43,13 +43,8 @@ class EBikeImpl implements EBike {
     }
 
     @Override
-    public String getId() {
-        return this.id;
-    }
-
-    @Override
     public EBikeSnapshot getEBikeSnapshot() {
-        return new EBikeSnapshot(state, batteryLevel, speed, direction, location);
+        return new EBikeSnapshot(id, state, batteryLevel, speed, direction, location);
     }
 
     @Override
@@ -106,7 +101,7 @@ class EBikeImpl implements EBike {
     }
 
     private void updateListeners() {
-        this.listeners.forEach(e -> e.bikeChanged(this.id, this.getEBikeSnapshot()));
+        this.listeners.forEach(e -> e.bikeChanged(this.getEBikeSnapshot()));
     }
 
     public String toString() {
