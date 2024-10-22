@@ -104,6 +104,9 @@ public class RideGUI extends JFrame {
         }
     }
 
+    // TODO change in order to use json result of the ride end (passing the result
+    // from this.stopRide()) and update just the changed bike using the id (bike
+    // found inside centralPanel.bikes)
     private void updateBikes() {
         this.client.get("/api/bikes").send(res2 -> {
             var result2 = res2.result().bodyAsJsonObject();
@@ -123,6 +126,7 @@ public class RideGUI extends JFrame {
         });
     }
 
+    //TODO The same thing with updateBikes but just with the user credit (so it is even easier)
     private void updateUserCredit() {
         this.client.get("/api")
                 .addQueryParam("id", userId)

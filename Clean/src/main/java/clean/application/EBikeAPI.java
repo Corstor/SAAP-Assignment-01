@@ -15,6 +15,7 @@ public interface EBikeAPI {
     void turnLeft();
     void turnRight();
     void turnBack();
+    void turn(double angle);
     void setSpeed(double speed);
 
     void subscribeEBikeListener(EBikeListener l);

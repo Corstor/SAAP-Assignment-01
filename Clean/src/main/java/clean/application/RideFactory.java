@@ -19,7 +19,7 @@ public class RideFactory {
     public Ride createRide(String userId, String bikeId) throws IOException {
         var user = userFactory.getUserWithId(bikeId);
         var bike = bikeFactory.getEBikeWithId(bikeId);
-        return new RideImpl(realId(this.id++), user, bike);
+        return new RideImpl(realId(this.id++), new UserAPIImpl(user), new EBikeAPIImpl(bike));
     }
 
     public String getId() {

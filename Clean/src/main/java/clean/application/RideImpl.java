@@ -4,26 +4,25 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 
-import clean.domain.ebike.EBike;
-import clean.domain.user.User;
+import io.vertx.core.json.JsonObject;
 
 class RideImpl implements Ride {
     private final String id;
     private final Date startedDate;
     private Optional<Date> endDate;
-    private final User user;
-    private final EBike bike;
+    private final UserAPI user;
+    private final EBikeAPI bike;
     private final RideSimulation rideSimulation;
     private boolean onGoing;
 
-    RideImpl(String id, User user, EBike bike) throws IOException {
+    RideImpl(String id, UserAPI user, EBikeAPIImpl bike) throws IOException {
         this.id = id;
         this.user = user;
         this.bike = bike;
 
         this.startedDate = new Date();
         this.endDate = Optional.empty();
-        this.rideSimulation = new RideSimulation(this.user, this.bike);
+        this.rideSimulation = new RideSimulation(this.user, bike);
     }
 
     @Override
@@ -60,14 +59,12 @@ class RideImpl implements Ride {
     }
 
     @Override
-    public String getUserId() {
-        return "";
-        // return this.user.getId();
+    public JsonObject getUser() {
+        return this.user.getUserState();
     }
 
     @Override
-    public String getBikeId() {
-        return "";
-        // return this.bike.getId();
+    public JsonObject getBike() {
+        return this.bike.getEBikeState();
     }
 }

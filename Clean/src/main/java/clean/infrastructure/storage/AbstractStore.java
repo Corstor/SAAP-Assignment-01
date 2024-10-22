@@ -22,7 +22,7 @@ public abstract class AbstractStore<X> implements Repository<X> {
         //Create a new file if it does not exists
         if (jsonFile.createNewFile()) {
             this.saveAllValues();
-        } 
+        }
     }
 
     public abstract List<X> loadAllValues() throws IOException;
