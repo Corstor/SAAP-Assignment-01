@@ -5,7 +5,7 @@ class RideSimulation extends Thread {
     private final EBikeAPIImpl bike;
     private boolean stopped;
 
-    public RideSimulation(UserAPI user, EBikeAPIImpl bike) {
+    RideSimulation(UserAPI user, EBikeAPIImpl bike) {
         this.user = user;
         this.bike = bike;
         this.stopped = false;

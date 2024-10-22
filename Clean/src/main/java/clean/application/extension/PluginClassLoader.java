@@ -5,11 +5,11 @@ import java.io.InputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class PluginClassLoader extends ClassLoader {
+class PluginClassLoader extends ClassLoader {
     
     private JarFile jarFile;
 
-    public PluginClassLoader(String jarFilePath) throws Exception {
+    PluginClassLoader(String jarFilePath) throws Exception {
         this.jarFile = new JarFile(jarFilePath);
     }
 

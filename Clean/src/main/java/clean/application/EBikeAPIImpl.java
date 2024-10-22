@@ -6,10 +6,10 @@ import clean.domain.ebike.EBike;
 import clean.domain.ebike.EBikeListener;
 import io.vertx.core.json.JsonObject;
 
-public class EBikeAPIImpl implements EBikeAPI {
+class EBikeAPIImpl implements EBikeAPI {
     private final EBike bike;
 
-    public EBikeAPIImpl(EBike bike) {
+    EBikeAPIImpl(EBike bike) {
         this.bike = bike;
     }
 

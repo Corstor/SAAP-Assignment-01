@@ -12,13 +12,12 @@ import clean.domain.ebike.EBikeSnapshot;
 
 import java.awt.*;
 
-import java.util.Map;
-
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
+import java.util.List;
 
 public class UserGUI extends JFrame {
     private final WebClient client;
@@ -91,10 +90,9 @@ public class UserGUI extends JFrame {
             var result2 = res2.result().bodyAsJsonObject();
             if (result2.getString("result").equals("Ok")) {
                 var objectMapper = new ObjectMapper();
-                var type = objectMapper.getTypeFactory().constructMapType(Map.class,
-                        String.class, EBikeSnapshot.class);
+                var type = objectMapper.getTypeFactory().constructCollectionType(List.class, EBikeSnapshot.class);
                 try {
-                    Map<String, EBikeSnapshot> bikes = objectMapper.readValue(result2.getJsonArray("bikes").toString(), type);
+                    List<EBikeSnapshot> bikes = objectMapper.readValue(result2.getJsonArray("bikes").toString(), type);
 
                     new RideGUI(id, result.getInteger("credit"), client, bikes);
                     dispose();

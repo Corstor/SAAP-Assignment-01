@@ -4,10 +4,10 @@ import clean.domain.user.User;
 import clean.domain.user.UserListener;
 import io.vertx.core.json.JsonObject;
 
-public class UserAPIImpl implements UserAPI {
+class UserAPIImpl implements UserAPI {
     private final User user;
 
-    public UserAPIImpl(User user) {
+    UserAPIImpl(User user) {
         this.user = user;
     }
 

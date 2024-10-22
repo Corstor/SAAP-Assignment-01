@@ -4,10 +4,9 @@ import javax.swing.*;
 
 import clean.application.extension.PluginApplier;
 import clean.domain.ebike.EBikeSnapshot;
-import clean.infrastructure.Pair;
 
 import java.awt.*;
-import java.util.Map;
+import java.util.List;
 import java.io.*;
 
 import io.vertx.core.buffer.Buffer;
@@ -19,12 +18,12 @@ public class RideGUI extends JFrame {
     private final String userId;
     private final WebClient client;
     private String rideId = null;
-    private final PluginApplier pluginApplier;
+    private final PluginApplier<? super Object> pluginApplier;
 
-    public RideGUI(String userId, int credit, WebClient client, Map<String, EBikeSnapshot> bikes) {
+    public RideGUI(String userId, int credit, WebClient client, List<EBikeSnapshot> bikes) {
         this.client = client;
         this.userId = userId;
-        this.pluginApplier = new PluginApplier();
+        this.pluginApplier = new PluginApplier<>();
 
         final JButton startRideButton = new JButton("Start a ride");
         final JButton addPlugin = new JButton("Add plugin");
@@ -51,11 +50,11 @@ public class RideGUI extends JFrame {
                 pluginApplier.loadNewEffect(selectedFile, name);
                 var newPluginButton = new JButton(name);
                 newPluginButton.addActionListener(e2 -> {
-                    try {
-                        pluginApplier.applyEffect(name, userId);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
+                    // try {
+                    //     // userPluginApplier.applyEffect();
+                    // } catch (IOException e1) {
+                    //     e1.printStackTrace();
+                    // }
                 });
                 topPanel.add(newPluginButton);
                 pack();
@@ -67,14 +66,14 @@ public class RideGUI extends JFrame {
         this.setVisible(true);
     }
 
-    public Map<String, EBikeSnapshot> getBikes() {
+    public List<EBikeSnapshot> getBikes() {
         return this.centralPanel.bikes;
     }
 
-    public void startNewRide(Pair<String, EBikeSnapshot> bike) {
+    public void startNewRide(EBikeSnapshot bike) {
         JsonObject request = new JsonObject();
         request.put("userId", userId);
-        request.put("bikeId", bike.first());
+        request.put("bikeId", bike.id());
 
         client.post("/api/ride/start")
                 .sendBuffer(Buffer.buffer(request.encode()), res -> {
@@ -103,11 +102,11 @@ public class RideGUI extends JFrame {
     static class VisualiserPanel extends JPanel {
         private long dx;
         private long dy;
-        private Map<String, EBikeSnapshot> bikes;
+        private List<EBikeSnapshot> bikes;
         private final String id;
         private int credit;
 
-        VisualiserPanel(int w, int h, Map<String, EBikeSnapshot> bikes, String id, int credit) {
+        VisualiserPanel(int w, int h, List<EBikeSnapshot> bikes, String id, int credit) {
             setSize(w, h);
             dx = w / 2 - 20;
             dy = h / 2 - 20;
@@ -125,14 +124,14 @@ public class RideGUI extends JFrame {
                     RenderingHints.VALUE_RENDER_QUALITY);
             g2.clearRect(0, 0, this.getWidth(), this.getHeight());
 
-            var it = bikes.entrySet().iterator();
+            var it = bikes.iterator();
             while (it.hasNext()) {
                 var b = it.next();
-                var p = b.getValue().location();
+                var p = b.location();
                 int x0 = (int) (dx + p.getX());
                 int y0 = (int) (dy - p.getY());
                 g2.drawOval(x0, y0, 20, 20);
-                g2.drawString(b.getKey(), x0, y0 + 35);
+                g2.drawString(b.id(), x0, y0 + 35);
                 g2.drawString("(" + (int) p.getX() + "," + (int) p.getY() + ")", x0, y0 + 50);
             }
 
