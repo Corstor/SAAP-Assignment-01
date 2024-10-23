@@ -20,9 +20,9 @@ public abstract class MyVerticle extends AbstractVerticle {
     private HttpServer server;
     private final String name;
     private final String createdObjectName;
-
+    
+    protected final Logger logger;
     protected final int port;
-    protected static Logger logger;
     protected Router router;
 
     protected EBikeFactory bikeFactory;
@@ -32,6 +32,7 @@ public abstract class MyVerticle extends AbstractVerticle {
         this.name = name;
         this.createdObjectName = createdObjectName;
         this.bikeFactory = EBikeFactory.getIstance();
+        logger = Logger.getLogger(name + "verticle logger");
     }
 
     public void launch() {
@@ -129,7 +130,17 @@ public abstract class MyVerticle extends AbstractVerticle {
 		sendReply(context, reply);
     }
 
-    protected abstract void loadAllBikes(JsonObject reply) throws IOException;
+    private void loadAllBikes(JsonObject reply) throws IOException {
+        this.bikeFactory.getEBikes().forEach(bike -> {
+            var snapshot = bike.getEBikeSnapshot();
+            reply.put("id", snapshot.id());
+            reply.put("batteryLevel", snapshot.batteryLevel());
+            reply.put("state", snapshot.state());
+            reply.put("speed", snapshot.speed());
+            reply.put("direction", snapshot.direction());
+            reply.put("location", snapshot.location());
+        });
+    };
 
     protected abstract void load(String id, JsonObject reply) throws IOException;
 

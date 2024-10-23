@@ -6,10 +6,8 @@ import java.util.Optional;
 
 import clean.domain.ebike.EBike;
 import clean.domain.ebike.EBikeFactory;
-import clean.domain.ebike.EBikeSnapshot;
 import clean.domain.user.User;
 import clean.domain.user.UserFactory;
-import clean.domain.user.UserSnapshot;
 
 class RideImpl implements Ride {
     private final String id;
@@ -61,15 +59,5 @@ class RideImpl implements Ride {
         endDate = Optional.of(new Date());
         this.rideSimulation.stopSimulation();
         onGoing = false;
-    }
-
-    @Override
-    public UserSnapshot getUser() {
-        return this.user.getUserSnapshot();
-    }
-
-    @Override
-    public EBikeSnapshot getBike() {
-        return this.bike.getEBikeSnapshot();
     }
 }

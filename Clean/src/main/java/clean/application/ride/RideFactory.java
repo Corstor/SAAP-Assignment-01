@@ -3,10 +3,18 @@ package clean.application.ride;
 import java.io.IOException;
 
 public class RideFactory {
+    private static RideFactory istance;
     private int id;
 
-    public RideFactory() {
+    private RideFactory() {
         this.id = 0;
+    }
+
+    public static RideFactory getIstance() {
+        if (istance == null) {
+            istance = new RideFactory();
+        }
+        return istance;
     }
 
     public Ride createRide(String userId, String bikeId) throws IOException {
