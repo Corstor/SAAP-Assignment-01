@@ -2,22 +2,44 @@ package clean.domain.user;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Optional;
 import java.util.function.Function;
 
 import clean.domain.Repository;
 
 public class UserFactory {
-    private final Repository<UserSnapshot> userRepository;
+    private static UserFactory istance;
+    private Repository<UserSnapshot> userRepository;
     private final List<User> users;
 
-    public UserFactory(Repository<UserSnapshot> uRepository) throws IOException {
-        this.userRepository = uRepository;
-        this.users = this.userRepository.loadAllValues().stream()
-                .map(e -> {
-                    User user = new UserImpl(e);
+    private UserFactory() {
+        this.users = new LinkedList<>();
+    }
+
+    public static UserFactory getIstance() {
+        if (istance == null) {
+            istance = new UserFactory();
+        }
+        return istance;
+    }
+
+    public void setRepository(Repository<UserSnapshot> repo) throws IOException {
+        this.userRepository = repo;
+        this.users.forEach(user -> {
+            try {
+                userRepository.saveValue(user.getUserSnapshot());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
+        this.users.clear();
+        this.users.addAll(this.userRepository.loadAllValues().stream()
+                .map(snapshot -> {
+                    User user = new UserImpl(snapshot);
                     return user;
-                }).toList();
+                }).toList());
+
     }
 
     public User createUser(String id) throws IOException {

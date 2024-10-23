@@ -2,6 +2,7 @@ package clean.domain.ebike;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -9,15 +10,37 @@ import clean.domain.P2d;
 import clean.domain.Repository;
 
 public class EBikeFactory {
-    private final Repository<EBikeSnapshot> bikeRepository;
+    private static EBikeFactory istance;
+    private Repository<EBikeSnapshot> bikeRepository;
     private final List<EBike> bikes;
 
-    public EBikeFactory(Repository<EBikeSnapshot> bikeRepository) throws IOException {
-        this.bikeRepository = bikeRepository;
-        this.bikes = this.bikeRepository.loadAllValues().stream().map(e -> {
-            EBike bike = new EBikeImpl(e);
-            return bike;
-        }).toList();
+    private EBikeFactory() {
+        this.bikes = new LinkedList<>();
+    }
+
+    public static EBikeFactory getIstance() {
+        if (istance == null) {
+            istance = new EBikeFactory();
+        }
+        return istance;
+    }
+
+    public void setRepository(Repository<EBikeSnapshot> repo) throws IOException {
+        this.bikeRepository = repo;
+        this.bikes.forEach(bike -> {
+            try {
+                bikeRepository.saveValue(bike.getEBikeSnapshot());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
+        this.bikes.clear();
+        this.bikes.addAll(this.bikeRepository.loadAllValues().stream()
+                .map(snapshot -> {
+                    EBike ebike = new EBikeImpl(snapshot);
+                    return ebike;
+                }).toList());
+
     }
 
     public EBike createEBike(String id) throws IOException {

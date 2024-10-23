@@ -1,14 +1,15 @@
-package clean.application;
+package clean.application.ride;
 
 import java.util.Date;
 import java.util.Optional;
 
-import io.vertx.core.json.JsonObject;
+import clean.domain.ebike.EBikeSnapshot;
+import clean.domain.user.UserSnapshot;
 
 public interface Ride {
     String getId();
-    JsonObject getUser();
-    JsonObject getBike();
+    UserSnapshot getUser();
+    EBikeSnapshot getBike();
 
     void start();
     void end();

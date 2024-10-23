@@ -1,11 +1,16 @@
-package clean.application;
+package clean.application.ride;
+
+import clean.domain.P2d;
+import clean.domain.V2d;
+import clean.domain.ebike.EBike;
+import clean.domain.user.User;
 
 class RideSimulation extends Thread {
-    private final UserAPI user;
-    private final EBikeAPIImpl bike;
+    private final User user;
+    private final EBike bike;
     private boolean stopped;
 
-    RideSimulation(UserAPI user, EBikeAPIImpl bike) {
+    RideSimulation(User user, EBike bike) {
         this.user = user;
         this.bike = bike;
         this.stopped = false;
@@ -13,37 +18,35 @@ class RideSimulation extends Thread {
 
     @Override
     public void run() {
-        this.bike.setSpeed(1);
+        this.bike.updateSpeed(1);
 
         var lastTimeDecreasedCredit = System.currentTimeMillis();
-		user.removeCredit(1);
+		user.decreaseCredit(1);
 
 		var lastTimeChangedDir = System.currentTimeMillis();
 
         while(!stopped) {
-            var location = this.bike.getLocation();
-            var direction = this.bike.getDirection();
-            var speed = this.bike.getSpeed();
+            var location = this.bike.getEBikeSnapshot().location();
+            var direction = this.bike.getEBikeSnapshot().direction();
+            var speed = this.bike.getEBikeSnapshot().speed();
 
-			var loc = location.sum(direction.mul(speed));
-            this.bike.moveTo(loc.getX(), loc.getY());
-
-            location = bike.getLocation();
+            this.bike.updateLocation(location.sum(direction.mul(speed)));
+            location = bike.getEBikeSnapshot().location();
 
             if (location.getX() > 200 || location.getX() < -200) {
-				bike.turnBack();
+				bike.updateDirection(new V2d(-direction.getX(), direction.getY()));
 				if (location.getX() > 200) {
-					bike.moveTo(200, location.getY());
+					bike.updateLocation(new P2d(200, location.getY()));
 				} else {
-					bike.moveTo(-200, location.getY());
+					bike.updateLocation(new P2d(-200, location.getY()));
 				}
 			};
 			if (location.getY() > 200 || location.getY() < -200) {
-				bike.turnBack();
+				bike.updateDirection(new V2d(direction.getX(), -direction.getY()));
 				if (location.getY() > 200) {
-					bike.moveTo(location.getX(), 200);
+					bike.updateLocation(new P2d(location.getX(), 200));
 				} else {
-					bike.moveTo(location.getX(), -200);
+					bike.updateLocation(new P2d(location.getX(), -200));
 				}
 			};
 
@@ -52,7 +55,7 @@ class RideSimulation extends Thread {
 			var elapsedTimeSinceLastChangeDir = System.currentTimeMillis() - lastTimeChangedDir;
 			if (elapsedTimeSinceLastChangeDir > 500) {
 				double angle = Math.random()*60 - 30;
-				this.bike.turn(angle);
+				this.bike.updateDirection(direction.rotate(angle));
 				elapsedTimeSinceLastChangeDir = System.currentTimeMillis();
 			}
 
@@ -60,7 +63,7 @@ class RideSimulation extends Thread {
 			
 			var elapsedTimeSinceLastDecredit = System.currentTimeMillis() - lastTimeDecreasedCredit;
 			if (elapsedTimeSinceLastDecredit > 1000) {
-				this.user.removeCredit(1);
+				this.user.decreaseCredit(1);
 				lastTimeDecreasedCredit = System.currentTimeMillis();
 			}
 

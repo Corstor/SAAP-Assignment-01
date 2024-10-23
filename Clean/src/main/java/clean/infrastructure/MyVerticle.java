@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import clean.domain.ebike.EBikeFactory;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
@@ -24,10 +25,13 @@ public abstract class MyVerticle extends AbstractVerticle {
     protected static Logger logger;
     protected Router router;
 
+    protected EBikeFactory bikeFactory;
+
     public MyVerticle(int port, String name, String createdObjectName) {
         this.port = port;
         this.name = name;
         this.createdObjectName = createdObjectName;
+        this.bikeFactory = EBikeFactory.getIstance();
     }
 
     public void launch() {

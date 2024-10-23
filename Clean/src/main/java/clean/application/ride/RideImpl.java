@@ -1,28 +1,33 @@
-package clean.application;
+package clean.application.ride;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 
-import io.vertx.core.json.JsonObject;
+import clean.domain.ebike.EBike;
+import clean.domain.ebike.EBikeFactory;
+import clean.domain.ebike.EBikeSnapshot;
+import clean.domain.user.User;
+import clean.domain.user.UserFactory;
+import clean.domain.user.UserSnapshot;
 
 class RideImpl implements Ride {
     private final String id;
     private final Date startedDate;
     private Optional<Date> endDate;
-    private final UserAPI user;
-    private final EBikeAPI bike;
+    private final User user;
+    private final EBike bike;
     private final RideSimulation rideSimulation;
     private boolean onGoing;
 
-    RideImpl(String id, UserAPI user, EBikeAPIImpl bike) throws IOException {
+    RideImpl(String id, String userId, String bikeId) throws IOException {
         this.id = id;
-        this.user = user;
-        this.bike = bike;
+        this.user = UserFactory.getIstance().getUserWithId(userId);
+        this.bike = EBikeFactory.getIstance().getEBikeWithId(bikeId);
 
         this.startedDate = new Date();
         this.endDate = Optional.empty();
-        this.rideSimulation = new RideSimulation(this.user, bike);
+        this.rideSimulation = new RideSimulation(this.user, this.bike);
     }
 
     @Override
@@ -59,12 +64,12 @@ class RideImpl implements Ride {
     }
 
     @Override
-    public JsonObject getUser() {
-        return this.user.getUserState();
+    public UserSnapshot getUser() {
+        return this.user.getUserSnapshot();
     }
 
     @Override
-    public JsonObject getBike() {
-        return this.bike.getEBikeState();
+    public EBikeSnapshot getBike() {
+        return this.bike.getEBikeSnapshot();
     }
 }
