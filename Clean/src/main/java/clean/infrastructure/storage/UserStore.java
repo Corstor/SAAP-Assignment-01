@@ -20,7 +20,7 @@ public class UserStore extends AbstractStore<UserSnapshot> {
     @Override
     public void eventOccured(UserSnapshot user) {
         try {
-            this.saveValue(user);
+            this.updateValue(user);
         } catch (IOException e) {
             e.printStackTrace();
         }

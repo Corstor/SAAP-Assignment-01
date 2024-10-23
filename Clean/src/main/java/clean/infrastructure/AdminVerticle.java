@@ -28,6 +28,7 @@ public class AdminVerticle extends MyVerticle {
     @Override
     protected void load(String id, JsonObject reply) throws IOException {
         var bike = this.bikeFactory.getEBikeWithId(id);
+        bike.addEBikeListener(this);
         reply.put("id", id);
         reply.put("state", bike.getEBikeSnapshot().state());
         reply.put("location", bike.getEBikeSnapshot().location());

@@ -38,6 +38,7 @@ public class EBikeFactory {
         this.bikes.addAll(this.bikeRepository.loadAllValues().stream()
                 .map(snapshot -> {
                     EBike ebike = new EBikeImpl(snapshot);
+                    ebike.addEBikeListener(bikeRepository);
                     return ebike;
                 }).toList());
 

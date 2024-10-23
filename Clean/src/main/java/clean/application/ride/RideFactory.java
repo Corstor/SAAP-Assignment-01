@@ -2,6 +2,9 @@ package clean.application.ride;
 
 import java.io.IOException;
 
+import clean.domain.ebike.EBikeFactory;
+import clean.domain.user.UserFactory;
+
 public class RideFactory {
     private static RideFactory istance;
     private int id;
@@ -18,7 +21,13 @@ public class RideFactory {
     }
 
     public Ride createRide(String userId, String bikeId) throws IOException {
-        return new RideImpl(realId(this.id++), userId, bikeId);
+        var user = UserFactory.getIstance().getUserWithId(userId);
+        var bike = EBikeFactory.getIstance().getEBikeWithId(bikeId);
+        if (!bike.isAvailable()) {
+            throw new BikeAlreadyRent(bike.getEBikeSnapshot().id());
+        }
+
+        return new RideImpl(realId(this.id++), user, bike);
     }
 
     public String getId() {

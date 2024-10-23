@@ -3,6 +3,7 @@ package clean.application;
 import java.io.IOException;
 import java.util.List;
 
+import clean.application.ride.RideFactory;
 import clean.domain.ebike.EBike;
 import clean.domain.ebike.EBikeFactory;
 import clean.domain.user.User;
@@ -25,6 +26,11 @@ public class StateImpl implements State {
     @Override
     public List<EBike> getBikes() {
         return this.bikes;
+    }
+
+    @Override
+    public RideFactory getRideFactory() {
+        return RideFactory.getIstance();
     }
     
 }

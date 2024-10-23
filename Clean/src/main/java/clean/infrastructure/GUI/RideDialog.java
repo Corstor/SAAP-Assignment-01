@@ -17,7 +17,6 @@ public class RideDialog extends JDialog {
         super(rideGUI, "Start Riding on EBike", true);
 
         JButton startButton = new JButton("Start ride");
-        JButton cancelButton = new JButton("Cancel");
 
         DefaultListModel<EBikeSnapshot> defaultList = new DefaultListModel<>();
         defaultList.addAll(rideGUI.getBikes());
@@ -30,12 +29,9 @@ public class RideDialog extends JDialog {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(startButton);
-        buttonPanel.add(cancelButton);
 
-        startButton.addActionListener(e -> rideGUI.startNewRide(list.getSelectedValue()));
-
-        cancelButton.addActionListener(e -> {
-            rideGUI.stopRide();
+        startButton.addActionListener(e -> {
+            rideGUI.startNewRide(list.getSelectedValue()); 
             dispose();
         });
 

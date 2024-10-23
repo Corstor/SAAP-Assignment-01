@@ -4,7 +4,10 @@ import javax.swing.*;
 
 import clean.application.StateImpl;
 import clean.application.extension.PluginApplier;
+import clean.domain.P2d;
+import clean.domain.V2d;
 import clean.domain.ebike.EBikeSnapshot;
+import clean.domain.ebike.EBikeState;
 
 import java.awt.*;
 import java.util.List;
@@ -21,7 +24,6 @@ public class RideGUI extends JFrame {
     private final VisualiserPanel centralPanel;
     private final String userId;
     private final WebClient client;
-    private String rideId = null;
     private final PluginApplier pluginApplier;
 
     public RideGUI(String userId, int credit, WebClient client, List<EBikeSnapshot> bikes, String host, int port) {
@@ -78,14 +80,47 @@ public class RideGUI extends JFrame {
                 .setPort(port)
                 .setURI("/api/events")
                 .setAllowOriginHeader(false);
-        
+
         Vertx vertx = Vertx.vertx();
 
         vertx.createHttpClient().webSocket(wsOptions, result -> {
             if (result.succeeded()) {
                 WebSocket ws = result.result();
 
-                ws.frameHandler(null); //TODO
+                ws.frameHandler(frame -> {
+                    if (frame.isText()) {
+                        String data = frame.textData();
+                        JsonObject obj = new JsonObject(data);
+                        String event = obj.getString("event");
+                        if (event.equals("bike-update")) {
+                            try {
+                                String id = obj.getString("id");
+                                int batteryLevel = obj.getInteger("batteryLevel");
+                                double speed = obj.getDouble("speed");
+
+                                var state = EBikeState.valueOf(obj.getString("state"));
+                                var direction = new V2d(obj.getDouble("direction-x"), obj.getDouble("direction-y"));
+                                var location = new P2d(obj.getDouble("location-x"), obj.getDouble("location-y"));
+
+                                this.centralPanel.bikes = this.getBikes().stream().map(e -> {
+                                    if (e.id().equals(id)) {
+                                        return new EBikeSnapshot(id, state, batteryLevel, speed, direction,
+                                        location);
+                                    }
+                                    return e;
+                                }).toList();                                
+
+                                this.centralPanel.refresh();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else if (event.equals("user-update")) {
+                            if (this.centralPanel.id.equals(obj.getString("id"))) {
+                                this.centralPanel.credit = obj.getInteger("credit");
+                            }
+                        }
+                    }
+                });
             }
         });
     }
@@ -103,24 +138,18 @@ public class RideGUI extends JFrame {
                 .sendBuffer(Buffer.buffer(request.encode()), res -> {
                     var result = res.result().bodyAsJsonObject();
                     if (result.getString("result").equals("Ok")) {
-                        this.rideId = result.getString("id");
+                        var rideId = result.getString("id");
+                        new RideControl(this, rideId);
                     }
                 });
     }
 
-    public void stopRide() {
-        if (rideId != null) {
-            JsonObject request = new JsonObject();
-            request.put("id", rideId);
+    public void stopRide(String rideId) {
+        JsonObject request = new JsonObject();
+        request.put("id", rideId);
 
-            client.post("/api/ride/end")
-                    .sendBuffer(Buffer.buffer(request.encode()), res -> {
-                        var result = res.result().bodyAsJsonObject();
-                        if (result.getString("result").equals("Ok")) {
-                            rideId = null;
-                        }
-                    });
-        }
+        client.post("/api/ride/end")
+                .sendBuffer(Buffer.buffer(request.encode()));
     }
 
     static class VisualiserPanel extends JPanel {

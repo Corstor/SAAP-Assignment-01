@@ -5,9 +5,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import clean.domain.ebike.EBike;
-import clean.domain.ebike.EBikeFactory;
 import clean.domain.user.User;
-import clean.domain.user.UserFactory;
 
 class RideImpl implements Ride {
     private final String id;
@@ -18,10 +16,10 @@ class RideImpl implements Ride {
     private final RideSimulation rideSimulation;
     private boolean onGoing;
 
-    RideImpl(String id, String userId, String bikeId) throws IOException {
+    RideImpl(String id, User user, EBike bike) throws IOException {
         this.id = id;
-        this.user = UserFactory.getIstance().getUserWithId(userId);
-        this.bike = EBikeFactory.getIstance().getEBikeWithId(bikeId);
+        this.user = user;
+        this.bike = bike;
 
         this.startedDate = new Date();
         this.endDate = Optional.empty();

@@ -42,4 +42,15 @@ public abstract class AbstractStore<X extends Snapshot> implements Repository<X>
         this.values.remove(value);
         this.saveAllValues();
     }
+
+    protected void updateValue(X value) throws IOException {
+        this.values = this.values.stream().map(e -> {
+            if (e.id().equals(value.id())) {
+                return value;
+            }
+            return e;
+        }).toList();
+        this.saveAllValues();
+    }
+    
 }

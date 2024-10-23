@@ -59,6 +59,8 @@ class RideSimulation extends Thread {
 				elapsedTimeSinceLastChangeDir = System.currentTimeMillis();
 			}
 
+			this.bike.updated();
+
             /* update credit */
 			
 			var elapsedTimeSinceLastDecredit = System.currentTimeMillis() - lastTimeDecreasedCredit;
@@ -66,6 +68,8 @@ class RideSimulation extends Thread {
 				this.user.decreaseCredit(1);
 				lastTimeDecreasedCredit = System.currentTimeMillis();
 			}
+
+			this.user.updated();
 
             try {
 				Thread.sleep(20);

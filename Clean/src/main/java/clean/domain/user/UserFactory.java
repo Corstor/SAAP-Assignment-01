@@ -37,6 +37,7 @@ public class UserFactory {
         this.users.addAll(this.userRepository.loadAllValues().stream()
                 .map(snapshot -> {
                     User user = new UserImpl(snapshot);
+                    user.addUserListener(userRepository);
                     return user;
                 }).toList());
 

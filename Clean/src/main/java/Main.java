@@ -9,7 +9,6 @@ import clean.infrastructure.storage.EBikeStore;
 import clean.infrastructure.storage.UserStore;
 
 public class Main {
-
     private static final int ADMIN_PORT = 8080;
     private static final int USER_PORT = 8081;
     private static final String HOST = "localhost";

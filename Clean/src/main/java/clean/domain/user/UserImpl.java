@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import clean.domain.Listener;
+import clean.domain.Snapshot;
 
 class UserImpl implements User {
     private final String id;
@@ -29,21 +30,20 @@ class UserImpl implements User {
     }
 
     @Override
-    public void decreaseCredit(final int amount) {
+    synchronized public void decreaseCredit(final int amount) {
         this.credit -= amount;
         if (this.credit < 0) {
             this.credit = 0;
         }
-        updateListeners();
     }
 
     @Override
-    public void rechargeCredit(final int amount) {
+    synchronized public void rechargeCredit(final int amount) {
         this.credit += amount;
-        updateListeners();
     }
 
-    private void updateListeners() {
+    @Override
+    synchronized public void updated() {
         this.listeners.forEach(e -> e.eventOccured(this.getUserSnapshot()));
     }
 
@@ -52,9 +52,10 @@ class UserImpl implements User {
         return "{ id: " + this.id + ", credit: " + this.credit + " }";
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void addUserListener(Listener<UserSnapshot> l) {
-        this.listeners.add(l);
+    public void addUserListener(Listener<? extends Snapshot> l) {
+        this.listeners.add((Listener<UserSnapshot>) l);
     }
 
     @Override

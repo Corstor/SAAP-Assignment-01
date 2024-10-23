@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import clean.domain.Listener;
 import clean.domain.P2d;
+import clean.domain.Snapshot;
 import clean.domain.V2d;
 
 class EBikeImpl implements EBike {
@@ -52,7 +53,6 @@ class EBikeImpl implements EBike {
     public void rechargeBattery() {
         this.batteryLevel = 100;
         this.state = EBikeState.AVAILABLE;
-        updateListeners();
     }
 
     @Override
@@ -62,7 +62,6 @@ class EBikeImpl implements EBike {
             this.batteryLevel = 0;
             this.state = EBikeState.MAINTENANCE;
         }
-        updateListeners();
     }
 
     @JsonIgnore
@@ -74,34 +73,30 @@ class EBikeImpl implements EBike {
     @Override
     public void updateBattery(int batteryLevel) {
         this.batteryLevel = batteryLevel;
-        updateListeners();
     }
 
     @Override
     public void updateState(EBikeState state) {
         this.state = state;
-        updateListeners();
     }
 
     @Override
     public void updateLocation(P2d location) {
         this.location = location;
-        updateListeners();
     }
 
     @Override
     public void updateSpeed(double speed) {
         this.speed = speed;
-        updateListeners();
     }
 
     @Override
     public void updateDirection(V2d direction) {
         this.direction = direction;
-        updateListeners();
     }
 
-    private void updateListeners() {
+    @Override
+    public void updated() {
         this.listeners.forEach(e -> e.eventOccured(this.getEBikeSnapshot()));
     }
 
@@ -112,8 +107,9 @@ class EBikeImpl implements EBike {
             + ", state: " + this.state;
 	}
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void addEBikeListener(Listener<EBikeSnapshot> l) {
-        this.listeners.add(l);
+    public void addEBikeListener(Listener<? extends Snapshot> l) {
+        this.listeners.add((Listener<EBikeSnapshot>) l);
     }
 }

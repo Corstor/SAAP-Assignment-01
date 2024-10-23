@@ -19,7 +19,7 @@ public class EBikeStore extends AbstractStore<EBikeSnapshot> {
     @Override
     public void eventOccured(EBikeSnapshot bike) {
         try {
-            this.saveValue(bike);
+            this.updateValue(bike);
         } catch (IOException e) {
             e.printStackTrace();
         }

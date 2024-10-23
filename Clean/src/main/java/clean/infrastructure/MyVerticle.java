@@ -5,7 +5,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import clean.domain.Listener;
+import clean.domain.P2d;
 import clean.domain.Snapshot;
+import clean.domain.V2d;
 import clean.domain.ebike.EBikeFactory;
 import clean.domain.ebike.EBikeSnapshot;
 import clean.domain.user.UserSnapshot;
@@ -75,13 +77,9 @@ public abstract class MyVerticle extends AbstractVerticle implements Listener<Sn
     }
 
     private void handleEventSubscription(ServerWebSocket webSocket) {
-        if(webSocket.path().equals("/api/events")) {
+        if (webSocket.path().equals("/api/events")) {
             webSocket.accept();
             logger.log(Level.INFO, "New Event update subscription accepted");
-            JsonObject reply = new JsonObject();
-
-            reply.put("event", "subscription-started");
-            webSocket.writeTextMessage(reply.encodePrettily());
 
             EventBus eb = vertx.eventBus();
             eb.consumer(CHANNEL, msg -> {
@@ -163,15 +161,10 @@ public abstract class MyVerticle extends AbstractVerticle implements Listener<Sn
     }
 
     private void loadAllBikes(JsonObject reply) throws IOException {
-        this.bikeFactory.getEBikes().forEach(bike -> {
-            var snapshot = bike.getEBikeSnapshot();
-            reply.put("id", snapshot.id());
-            reply.put("batteryLevel", snapshot.batteryLevel());
-            reply.put("state", snapshot.state());
-            reply.put("speed", snapshot.speed());
-            reply.put("direction", snapshot.direction());
-            reply.put("location", snapshot.location());
-        });
+        reply.put("bikes", this.bikeFactory.getEBikes().stream().map(e -> {
+            e.addEBikeListener(this);
+            return e.getEBikeSnapshot();
+        }).toList());
     };
 
     protected abstract void load(String id, JsonObject reply) throws IOException;
@@ -194,13 +187,27 @@ public abstract class MyVerticle extends AbstractVerticle implements Listener<Sn
     private void putContent(JsonObject obj, Snapshot value) {
         obj.put("id", value.id());
         if (value instanceof EBikeSnapshot bike) {
-            obj.put("state", bike.state());
+            obj.put("event", "bike-update");
+            obj.put("state", bike.state().name());
             obj.put("batteryLevel", bike.batteryLevel());
             obj.put("speed", bike.speed());
-            obj.put("direction", bike.direction());
-            obj.put("location", bike.location());
+
+            // Convert V2d (direction and location) into JsonObject
+            convertV2d(obj, bike.direction());
+            convertP2d(obj, bike.location());
         } else if (value instanceof UserSnapshot user) {
+            obj.put("event", "user-update");
             obj.put("credit", user.credit());
         }
+    }
+
+    private void convertP2d(JsonObject obj, P2d p2d) {
+        obj.put("location-x", p2d.getX());
+        obj.put("location-y", p2d.getY());
+    }
+
+    private void convertV2d(JsonObject obj, V2d v2d) {
+        obj.put("direction-x", v2d.getX());
+        obj.put("direction-y", v2d.getY());
     }
 }
