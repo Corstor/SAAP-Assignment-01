@@ -63,8 +63,8 @@ public class UserFactory {
 
     private void saveUser(User user) throws IOException{
         this.userRepository.saveValue(user.getUserSnapshot());
-        this.users.add(user);
         user.addUserListener(this.userRepository);
+        this.users.add(user);
     }
 
     private Optional<User> checkUserExistance(String id, Function<Optional<User>, Boolean> consumer,

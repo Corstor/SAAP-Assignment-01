@@ -21,7 +21,7 @@ public class PluginApplier {
 
     private void registerNewEffectPlugin(String pluginID, File libFile) throws Exception  {     
         var loader = new PluginClassLoader(libFile.getAbsolutePath());
-        String className = "layered.business.extension." + pluginID;
+        String className = "clean.application.extension." + pluginID;
         Class<?> pluginClass = loader.loadClass(className);
         Plugin effectPlugin = (Plugin) pluginClass.getDeclaredConstructor().newInstance();
 		pluginRegistry.put(pluginID, effectPlugin);

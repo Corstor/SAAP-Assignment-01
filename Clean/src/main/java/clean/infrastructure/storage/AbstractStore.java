@@ -20,7 +20,7 @@ public abstract class AbstractStore<X extends Snapshot> implements Repository<X>
         this.objectMapper = new ObjectMapper();
         this.values = new LinkedList<>();
 
-        //Create a new file if it does not exists
+        // Create a new file if it does not exists
         if (jsonFile.createNewFile()) {
             this.saveAllValues();
         }
@@ -39,18 +39,23 @@ public abstract class AbstractStore<X extends Snapshot> implements Repository<X>
     }
 
     public void deleteValue(X value) throws IOException {
+        this.values = loadAllValues();
         this.values.remove(value);
         this.saveAllValues();
     }
 
-    protected void updateValue(X value) throws IOException {
-        this.values = this.values.stream().map(e -> {
-            if (e.id().equals(value.id())) {
-                return value;
-            }
-            return e;
-        }).toList();
-        this.saveAllValues();
+    @Override
+    public synchronized void eventOccured(X value) {
+        try {
+            this.values = this.loadAllValues().stream().map(e -> {
+                if (e.id().equals(value.id())) {
+                    return value;
+                }
+                return e;
+            }).toList();
+            this.saveAllValues();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-    
 }

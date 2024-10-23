@@ -30,8 +30,8 @@ public class EBikeFactory {
         this.bikes.forEach(bike -> {
             try {
                 bikeRepository.saveValue(bike.getEBikeSnapshot());
-            } catch (IOException e1) {
-                e1.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
         this.bikes.clear();
@@ -66,8 +66,8 @@ public class EBikeFactory {
 
     private void saveBike(EBike bike) throws IOException {
         this.bikeRepository.saveValue(bike.getEBikeSnapshot());
-        this.bikes.add(bike);
         bike.addEBikeListener(this.bikeRepository);
+        this.bikes.add(bike);
     }
 
     private Optional<EBike> checkEBikeExistance(String id, Function<Optional<EBike>, Boolean> consumer,

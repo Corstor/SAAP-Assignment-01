@@ -16,13 +16,4 @@ public class UserStore extends AbstractStore<UserSnapshot> {
         return objectMapper.readValue(jsonFile, new TypeReference<List<UserSnapshot>>() {
         });
     }
-
-    @Override
-    public void eventOccured(UserSnapshot user) {
-        try {
-            this.updateValue(user);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

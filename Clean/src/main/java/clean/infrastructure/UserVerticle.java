@@ -8,6 +8,7 @@ import java.util.logging.Level;
 
 import clean.application.ride.Ride;
 import clean.application.ride.RideFactory;
+import clean.application.ride.RideFactoryImpl;
 import clean.domain.user.UserFactory;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
@@ -23,7 +24,7 @@ public class UserVerticle extends MyVerticle {
     public UserVerticle(final int port) {
         super(port, "User", "user");
         this.userFactory = UserFactory.getIstance();
-        this.rideFactory = RideFactory.getIstance();
+        this.rideFactory = RideFactoryImpl.getIstance();
     }
 
     @Override

@@ -60,6 +60,7 @@ public class RideGUI extends JFrame {
                 newPluginButton.addActionListener(e2 -> {
                     try {
                         pluginApplier.applyEffect(name, new StateImpl(userId));
+                        this.centralPanel.refresh();
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }

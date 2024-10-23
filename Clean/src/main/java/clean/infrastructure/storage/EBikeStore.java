@@ -15,13 +15,4 @@ public class EBikeStore extends AbstractStore<EBikeSnapshot> {
     public List<EBikeSnapshot> loadAllValues() throws IOException {
         return objectMapper.readValue(jsonFile, new TypeReference<List<EBikeSnapshot>>() {});
     }
-
-    @Override
-    public void eventOccured(EBikeSnapshot bike) {
-        try {
-            this.updateValue(bike);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
