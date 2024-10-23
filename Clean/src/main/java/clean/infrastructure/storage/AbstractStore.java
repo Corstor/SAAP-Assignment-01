@@ -8,8 +8,9 @@ import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import clean.domain.Repository;
+import clean.domain.Snapshot;
 
-public abstract class AbstractStore<X> implements Repository<X> {
+public abstract class AbstractStore<X extends Snapshot> implements Repository<X> {
     protected final File jsonFile;
     protected List<X> values;
     protected final ObjectMapper objectMapper;

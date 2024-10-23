@@ -47,8 +47,7 @@ public class EBikeFactory {
         checkEBikeExistance(id, (ebike) -> ebike.isPresent(), new EBikeAlreadyCreatedException(id));
 
         var bike = new EBikeImpl(id);
-        this.bikeRepository.saveValue(bike.getEBikeSnapshot());
-        this.bikes.add(bike);
+        saveBike(bike);
 
         return bike;
     }
@@ -59,10 +58,15 @@ public class EBikeFactory {
         var bike = new EBikeImpl(id);
         bike.updateLocation(new P2d(x, y));
 
-        this.bikeRepository.saveValue(bike.getEBikeSnapshot());
-        this.bikes.add(bike);
+        saveBike(bike);
 
         return bike;
+    }
+
+    private void saveBike(EBike bike) throws IOException {
+        this.bikeRepository.saveValue(bike.getEBikeSnapshot());
+        this.bikes.add(bike);
+        bike.addEBikeListener(this.bikeRepository);
     }
 
     private Optional<EBike> checkEBikeExistance(String id, Function<Optional<EBike>, Boolean> consumer,

@@ -5,10 +5,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import clean.domain.ebike.EBikeListener;
 import clean.domain.ebike.EBikeSnapshot;
 
-public class EBikeStore extends AbstractStore<EBikeSnapshot> implements EBikeListener {
+public class EBikeStore extends AbstractStore<EBikeSnapshot> {
     public EBikeStore() throws IOException {
         super("EBikes.json");
     }
@@ -18,7 +17,7 @@ public class EBikeStore extends AbstractStore<EBikeSnapshot> implements EBikeLis
     }
 
     @Override
-    public void bikeChanged(EBikeSnapshot bike) {
+    public void eventOccured(EBikeSnapshot bike) {
         try {
             this.saveValue(bike);
         } catch (IOException e) {

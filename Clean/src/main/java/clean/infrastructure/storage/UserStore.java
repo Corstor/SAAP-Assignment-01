@@ -6,9 +6,8 @@ import java.util.List;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import clean.domain.user.UserSnapshot;
-import clean.domain.user.UserListener;
 
-public class UserStore extends AbstractStore<UserSnapshot> implements UserListener {
+public class UserStore extends AbstractStore<UserSnapshot> {
     public UserStore() throws IOException {
         super("Users.json");
     }
@@ -19,7 +18,7 @@ public class UserStore extends AbstractStore<UserSnapshot> implements UserListen
     }
 
     @Override
-    public void userCreditChanged(UserSnapshot user) {
+    public void eventOccured(UserSnapshot user) {
         try {
             this.saveValue(user);
         } catch (IOException e) {

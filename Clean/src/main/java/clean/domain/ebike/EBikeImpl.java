@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import clean.domain.Listener;
 import clean.domain.P2d;
 import clean.domain.V2d;
 
@@ -18,7 +19,7 @@ class EBikeImpl implements EBike {
     private V2d direction;
     private double speed;
     private int batteryLevel;
-    private final List<EBikeListener> listeners;
+    private final List<Listener<EBikeSnapshot>> listeners;
 
     @JsonCreator
     EBikeImpl(@JsonProperty("id") final String id) {
@@ -101,7 +102,7 @@ class EBikeImpl implements EBike {
     }
 
     private void updateListeners() {
-        this.listeners.forEach(e -> e.bikeChanged(this.getEBikeSnapshot()));
+        this.listeners.forEach(e -> e.eventOccured(this.getEBikeSnapshot()));
     }
 
     public String toString() {
@@ -112,7 +113,7 @@ class EBikeImpl implements EBike {
 	}
 
     @Override
-    public void addEBikeListener(EBikeListener l) {
+    public void addEBikeListener(Listener<EBikeSnapshot> l) {
         this.listeners.add(l);
     }
 }

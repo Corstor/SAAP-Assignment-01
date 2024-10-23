@@ -1,3 +1,7 @@
 package clean.domain.user;
 
-public record UserSnapshot(String id, int credit) {}
+import clean.domain.Snapshot;
+
+public record UserSnapshot(String id, int credit) implements Snapshot {
+
+}

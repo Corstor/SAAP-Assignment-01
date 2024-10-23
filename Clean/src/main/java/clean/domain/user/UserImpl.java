@@ -6,10 +6,12 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import clean.domain.Listener;
+
 class UserImpl implements User {
     private final String id;
     private int credit;
-    private final List<UserListener> listeners;
+    private final List<Listener<UserSnapshot>> listeners;
 
     @JsonCreator
     UserImpl(@JsonProperty("id") final String id, @JsonProperty("credit") final int credit) {
@@ -42,7 +44,7 @@ class UserImpl implements User {
     }
 
     private void updateListeners() {
-        this.listeners.forEach(e -> e.userCreditChanged(this.getUserSnapshot()));
+        this.listeners.forEach(e -> e.eventOccured(this.getUserSnapshot()));
     }
 
     @Override
@@ -51,7 +53,7 @@ class UserImpl implements User {
     }
 
     @Override
-    public void addUserListener(UserListener l) {
+    public void addUserListener(Listener<UserSnapshot> l) {
         this.listeners.add(l);
     }
 

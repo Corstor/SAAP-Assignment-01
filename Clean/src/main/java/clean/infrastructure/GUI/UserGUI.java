@@ -25,12 +25,17 @@ public class UserGUI extends JFrame {
     private final JLabel messageField;
     private final JButton createButton;
     private final JButton loginButton;
+    private final String host;
+    private final int port;
 
-    public UserGUI() {
+    public UserGUI(String host, int port) {
+        this.host = host;
+        this.port = port;
+
         Vertx vertx = Vertx.vertx();
         this.client = WebClient.create(
                 vertx,
-                new WebClientOptions().setDefaultPort(8081).setDefaultHost("localhost"));
+                new WebClientOptions().setDefaultPort(port).setDefaultHost(host));
 
         this.idField = new JTextField(30);
         this.messageField = new JLabel();
@@ -94,7 +99,7 @@ public class UserGUI extends JFrame {
                 try {
                     List<EBikeSnapshot> bikes = objectMapper.readValue(result2.getJsonArray("bikes").toString(), type);
 
-                    new RideGUI(id, result.getInteger("credit"), client, bikes);
+                    new RideGUI(id, result.getInteger("credit"), client, bikes, host, port);
                     dispose();
                 } catch (Exception e2) {
                     e2.printStackTrace();

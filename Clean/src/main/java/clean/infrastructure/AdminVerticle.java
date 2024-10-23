@@ -35,5 +35,4 @@ public class AdminVerticle extends MyVerticle {
         reply.put("speed", bike.getEBikeSnapshot().speed());
         reply.put("batteryLevel", bike.getEBikeSnapshot().batteryLevel());
     }
-    
 }

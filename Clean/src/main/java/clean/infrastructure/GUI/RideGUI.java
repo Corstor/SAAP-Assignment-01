@@ -2,6 +2,7 @@ package clean.infrastructure.GUI;
 
 import javax.swing.*;
 
+import clean.application.StateImpl;
 import clean.application.extension.PluginApplier;
 import clean.domain.ebike.EBikeSnapshot;
 
@@ -9,7 +10,10 @@ import java.awt.*;
 import java.util.List;
 import java.io.*;
 
+import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.WebSocket;
+import io.vertx.core.http.WebSocketConnectOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
 
@@ -20,7 +24,7 @@ public class RideGUI extends JFrame {
     private String rideId = null;
     private final PluginApplier pluginApplier;
 
-    public RideGUI(String userId, int credit, WebClient client, List<EBikeSnapshot> bikes) {
+    public RideGUI(String userId, int credit, WebClient client, List<EBikeSnapshot> bikes, String host, int port) {
         this.client = client;
         this.userId = userId;
         this.pluginApplier = new PluginApplier();
@@ -32,6 +36,8 @@ public class RideGUI extends JFrame {
         topPanel.add(startRideButton);
         topPanel.add(addPlugin);
         add(topPanel, BorderLayout.NORTH);
+
+        startListeningToWebSocket(host, port);
 
         centralPanel = new VisualiserPanel(800, 500, bikes, userId, credit);
         add(centralPanel, BorderLayout.CENTER);
@@ -50,11 +56,11 @@ public class RideGUI extends JFrame {
                 pluginApplier.loadNewEffect(selectedFile, name);
                 var newPluginButton = new JButton(name);
                 newPluginButton.addActionListener(e2 -> {
-                    // try {
-                    //     pluginApplier.applyEffect(name, new StateImpl(, bikes));
-                    // } catch (IOException e1) {
-                    //     e1.printStackTrace();
-                    // }
+                    try {
+                        pluginApplier.applyEffect(name, new StateImpl(userId));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 });
                 topPanel.add(newPluginButton);
                 pack();
@@ -64,6 +70,24 @@ public class RideGUI extends JFrame {
 
         setSize(720, 640);
         this.setVisible(true);
+    }
+
+    private void startListeningToWebSocket(String host, int port) {
+        WebSocketConnectOptions wsOptions = new WebSocketConnectOptions()
+                .setHost(host)
+                .setPort(port)
+                .setURI("/api/events")
+                .setAllowOriginHeader(false);
+        
+        Vertx vertx = Vertx.vertx();
+
+        vertx.createHttpClient().webSocket(wsOptions, result -> {
+            if (result.succeeded()) {
+                WebSocket ws = result.result();
+
+                ws.frameHandler(null); //TODO
+            }
+        });
     }
 
     public List<EBikeSnapshot> getBikes() {

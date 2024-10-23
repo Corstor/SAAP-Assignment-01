@@ -1,5 +1,6 @@
 package clean.domain.ebike;
 
+import clean.domain.Listener;
 import clean.domain.P2d;
 import clean.domain.V2d;
 
@@ -16,5 +17,5 @@ public interface EBike {
     void updateSpeed(double speed);
     void updateDirection(V2d direction);
 
-    void addEBikeListener(EBikeListener l);
+    void addEBikeListener(Listener<EBikeSnapshot> l);
 }

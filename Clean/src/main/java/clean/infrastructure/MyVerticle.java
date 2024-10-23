@@ -1,26 +1,32 @@
 package clean.infrastructure;
 
-
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import clean.domain.Listener;
+import clean.domain.Snapshot;
 import clean.domain.ebike.EBikeFactory;
+import clean.domain.ebike.EBikeSnapshot;
+import clean.domain.user.UserSnapshot;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.http.ServerWebSocket;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 
-public abstract class MyVerticle extends AbstractVerticle {
+public abstract class MyVerticle extends AbstractVerticle implements Listener<Snapshot> {
+    private static final String CHANNEL = "User-EBike-channel";
     private HttpServer server;
     private final String name;
     private final String createdObjectName;
-    
+
     protected final Logger logger;
     protected final int port;
     protected Router router;
@@ -46,6 +52,7 @@ public abstract class MyVerticle extends AbstractVerticle {
 
         routerSetup();
         additionalSetups();
+        setupWebSocket();
 
         endOfSetup();
     }
@@ -63,12 +70,37 @@ public abstract class MyVerticle extends AbstractVerticle {
         router.route(HttpMethod.GET, "/api/bikes").handler(this::getBikes);
     }
 
+    private void setupWebSocket() {
+        server.webSocketHandler(this::handleEventSubscription);
+    }
+
+    private void handleEventSubscription(ServerWebSocket webSocket) {
+        if(webSocket.path().equals("/api/events")) {
+            webSocket.accept();
+            logger.log(Level.INFO, "New Event update subscription accepted");
+            JsonObject reply = new JsonObject();
+
+            reply.put("event", "subscription-started");
+            webSocket.writeTextMessage(reply.encodePrettily());
+
+            EventBus eb = vertx.eventBus();
+            eb.consumer(CHANNEL, msg -> {
+                JsonObject ev = (JsonObject) msg.body();
+                logger.log(Level.INFO, ev.encodePrettily());
+                webSocket.writeTextMessage(ev.encodePrettily());
+            });
+        } else {
+            logger.log(Level.WARNING, "Event update subscription refused");
+            webSocket.reject();
+        }
+    }
+
     private void endOfSetup() {
         server
-		.requestHandler(router)
-		.listen(port);
+                .requestHandler(router)
+                .listen(port);
 
-		logger.log(Level.INFO, name + " web server ready - port: " + port);
+        logger.log(Level.INFO, name + " web server ready - port: " + port);
     }
 
     /**
@@ -95,14 +127,14 @@ public abstract class MyVerticle extends AbstractVerticle {
      * Create an object starting from the request body.
      * 
      * @param request the request from which the object will be created.
-     * @throws IOException 
+     * @throws IOException
      */
     protected abstract void create(JsonObject request) throws IOException;
 
     private void get(RoutingContext context) {
         String id = context.request().getParam("id");
         logger.log(Level.INFO, "Asked to get data about " + id + " " + createdObjectName);
-		JsonObject reply = new JsonObject();
+        JsonObject reply = new JsonObject();
 
         try {
             load(id, reply);
@@ -111,13 +143,13 @@ public abstract class MyVerticle extends AbstractVerticle {
             logger.log(Level.WARNING, e.getMessage());
             reply.put("result", "Error -> " + e.getMessage());
         }
-		
-		sendReply(context, reply);
+
+        sendReply(context, reply);
     }
 
     private void getBikes(RoutingContext context) {
         logger.log(Level.INFO, "Asked to get data about all the bikes");
-		JsonObject reply = new JsonObject();
+        JsonObject reply = new JsonObject();
 
         try {
             loadAllBikes(reply);
@@ -126,8 +158,8 @@ public abstract class MyVerticle extends AbstractVerticle {
             logger.log(Level.WARNING, e.getMessage());
             reply.put("result", "Error -> " + e.getMessage());
         }
-		
-		sendReply(context, reply);
+
+        sendReply(context, reply);
     }
 
     private void loadAllBikes(JsonObject reply) throws IOException {
@@ -145,8 +177,30 @@ public abstract class MyVerticle extends AbstractVerticle {
     protected abstract void load(String id, JsonObject reply) throws IOException;
 
     protected void sendReply(RoutingContext request, JsonObject reply) {
-		HttpServerResponse response = request.response();
-		response.putHeader("content-type", "application/json");
-		response.end(reply.toString());
-	}
+        HttpServerResponse response = request.response();
+        response.putHeader("content-type", "application/json");
+        response.end(reply.toString());
+    }
+
+    @Override
+    public void eventOccured(Snapshot value) {
+        logger.log(Level.INFO, "New event");
+        EventBus eb = vertx.eventBus();
+        JsonObject obj = new JsonObject();
+        putContent(obj, value);
+        eb.publish(CHANNEL, obj);
+    }
+
+    private void putContent(JsonObject obj, Snapshot value) {
+        obj.put("id", value.id());
+        if (value instanceof EBikeSnapshot bike) {
+            obj.put("state", bike.state());
+            obj.put("batteryLevel", bike.batteryLevel());
+            obj.put("speed", bike.speed());
+            obj.put("direction", bike.direction());
+            obj.put("location", bike.location());
+        } else if (value instanceof UserSnapshot user) {
+            obj.put("credit", user.credit());
+        }
+    }
 }
