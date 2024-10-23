@@ -5,23 +5,24 @@ import org.junit.jupiter.api.Test;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchRule;
-import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
 
 public class ArchitectureTest {
     @Test
-    public void layeredRule() {
-        JavaClasses importedClasses = new ClassFileImporter().importPackages("layered");
+    public void cleanRule() {
+        JavaClasses importedClasses = new ClassFileImporter().importPackages("clean");
 
-        ArchRule ruleDep1 = layeredArchitecture().consideringAllDependencies()
-            .layer("Persistence").definedBy("..persistence..")
-            .layer("Business").definedBy("..business..")
-            .layer("Presentation").definedBy("..presentation..")
+        ArchRule ruleDep1 = noClasses().that().resideInAPackage("..domain..")
+            .should().dependOnClassesThat().resideInAPackage("..application..")
+            .orShould().dependOnClassesThat().resideInAPackage("..infrastructure..");
 
-            .whereLayer("Presentation").mayNotBeAccessedByAnyLayer()
-            .whereLayer("Business").mayOnlyBeAccessedByLayers("Presentation")
-            .whereLayer("Persistence").mayOnlyBeAccessedByLayers("Business");
+
+        ArchRule ruleDep2 = noClasses().that().resideInAPackage("..application..")
+            .should().dependOnClassesThat().resideInAPackage("..infrastructue..");
 
         ruleDep1.check(importedClasses);
+
+        ruleDep2.check(importedClasses);
     }
 }
