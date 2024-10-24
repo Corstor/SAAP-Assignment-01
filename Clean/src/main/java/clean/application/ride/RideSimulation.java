@@ -3,6 +3,7 @@ package clean.application.ride;
 import clean.domain.P2d;
 import clean.domain.V2d;
 import clean.domain.ebike.EBike;
+import clean.domain.ebike.EBikeState;
 import clean.domain.user.User;
 
 class RideSimulation extends Thread {
@@ -26,6 +27,7 @@ class RideSimulation extends Thread {
 		var lastTimeChangedDir = System.currentTimeMillis();
 
         while(!stopped) {
+			this.bike.updateState(EBikeState.IN_USE);
             var location = this.bike.getEBikeSnapshot().location();
             var direction = this.bike.getEBikeSnapshot().direction();
             var speed = this.bike.getEBikeSnapshot().speed();
@@ -72,9 +74,11 @@ class RideSimulation extends Thread {
 			this.user.updated();
 
             try {
-				Thread.sleep(20);
+				Thread.sleep(30);
 			} catch (Exception ex) {}
         }
+
+		this.bike.updateState(EBikeState.AVAILABLE);
     }
 
     public void stopSimulation() {

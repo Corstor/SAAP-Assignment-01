@@ -32,13 +32,13 @@ public abstract class AbstractStore<X extends Snapshot> implements Repository<X>
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(jsonFile, values);
     }
 
-    public void saveValue(X value) throws IOException {
+    public synchronized void saveValue(X value) throws IOException {
         this.values = loadAllValues();
         this.values.add(value);
         this.saveAllValues();
     }
 
-    public void deleteValue(X value) throws IOException {
+    public synchronized void deleteValue(X value) throws IOException {
         this.values = loadAllValues();
         this.values.remove(value);
         this.saveAllValues();

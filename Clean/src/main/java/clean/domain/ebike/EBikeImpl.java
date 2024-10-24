@@ -52,7 +52,7 @@ class EBikeImpl implements EBike {
     @Override
     public void rechargeBattery() {
         this.batteryLevel = 100;
-        this.state = EBikeState.AVAILABLE;
+        updateState(EBikeState.AVAILABLE);
     }
 
     @Override
@@ -60,7 +60,7 @@ class EBikeImpl implements EBike {
         this.batteryLevel -= delta;
         if (this.batteryLevel <= 0) {
             this.batteryLevel = 0;
-            this.state = EBikeState.MAINTENANCE;
+            updateState(EBikeState.MAINTENANCE);
         }
     }
 
@@ -78,6 +78,7 @@ class EBikeImpl implements EBike {
     @Override
     public void updateState(EBikeState state) {
         this.state = state;
+        this.updated();
     }
 
     @Override
