@@ -4,7 +4,6 @@ import clean.domain.ebike.EBikeFactory;
 import clean.domain.user.UserFactory;
 import clean.infrastructure.AdminVerticle;
 import clean.infrastructure.UserVerticle;
-import clean.infrastructure.GUI.UserGUI;
 import clean.infrastructure.storage.EBikeStore;
 import clean.infrastructure.storage.UserStore;
 

@@ -1,4 +1,4 @@
-package clean.infrastructure.GUI;
+
 
 import javax.swing.*;
 
