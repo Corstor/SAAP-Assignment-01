@@ -12,22 +12,26 @@ Should be possible to add new functionalities available to the users dynamically
 
 ### My specific requirements
 
-To create persistency, it has been decided to allows the user to save its data, to load its data, and to load and change the electric bikes data.
+To create persistency, it has been decided to allows the user to save its data, to load its data, and to load and change the electric bikes data (with a ride).
 
 The admin can load, save and change the electric bikes data.
 
-The data that admin and user can change about the bikes could change (or the way to do it). <!-- TO SEE THIS POINT -->
-
 ## Architecture
 
-The architecture chosen is a layered architecture: there will be a Presentation layer that updates itself when requested by the user, in order to stay updated with the Business layer, where there will be all the functionalities that will use the data in the Persistence layer. The Persistence layer can then save some data through the Database layer.
+The architecture chosen is a layered architecture: there will be a Presentation layer that updates itself when requested by the user or the admin, in order to stay updated with the Business layer, where there will be all the functionalities that will work on the data of the Persistence layer.
+
+The Presentation layer uses a REST API to send data to users and admin and receive commands, like creating an ebike, creating a user, starting a ride or stop it.
 
 ![C&C view of the architecture (without the Database Layer)](imgs/Uni%20-%20SAAP-Assignment-01.png)
 
-The C&C view of the architecture without the database layer, just to see the main functions that the users and admin can do.
 
-![C&C view of the architecture regarding the database layer](imgs/Uni%20-%20SAAP-Assignment-01-part2.png)
+## Quality attributes scenarios
 
-The part of the C&C view that shows how the database layer interact with the others (and what allows users and admin to save and load data).
+Availability:
+    If a user (Source) create a user already existing (Stimulus) on the system (Artifact) in normal operations (Environment) the system informs the user (Response) with no downtime (Response Measure).
 
-An important thing to notice with this architecture is that a change on the persistance layer data does not impose a change in the database one, but instead the change is done when requested by the user/admin.
+The same as above works with creation of EBikes from the admins.
+
+## Fitness functions
+
+It has been used a fitness function in order to assert that the layered architecture has been followed correctly: The presentation layer can only use the business layer, that can use just the persistence layer that should not use any other layer.

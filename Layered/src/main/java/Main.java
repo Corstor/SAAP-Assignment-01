@@ -1,5 +1,4 @@
 import layered.presentation.AdminVerticle;
-import layered.presentation.UserGUI;
 import layered.presentation.UserVerticle;
 
 public class Main {
