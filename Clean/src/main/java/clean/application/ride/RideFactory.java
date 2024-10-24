@@ -24,7 +24,7 @@ public class RideFactory {
         var user = UserFactory.getIstance().getUserWithId(userId);
         var bike = EBikeFactory.getIstance().getEBikeWithId(bikeId);
         if (!bike.isAvailable()) {
-            throw new BikeAlreadyRent(bike.getEBikeSnapshot().id());
+            throw new BikeNotAvailable(bike.getEBikeSnapshot().id());
         }
 
         return new RideImpl(realId(this.id++), user, bike);

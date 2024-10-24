@@ -28,7 +28,7 @@ The Presentation layer uses a REST API to send data to users and admin and recei
 ## Quality attributes scenarios
 
 Availability:
-    If a user (Source) create a user already existing (Stimulus) on the system (Artifact) in normal operations (Environment) the system informs the user (Response) with no downtime (Response Measure).
+    If a user (Source) creates a user already existing (Stimulus) on the system (Artifact) in normal operations (Environment) the system informs the user (Response) with no downtime (Response Measure).
 
 The same as above works with creation of EBikes from the admins.
 

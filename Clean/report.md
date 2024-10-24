@@ -25,3 +25,20 @@ The ride in the Application will use the inbound ports. The stores will use the 
 ![C&C view of the architecture](imgs/Uni%20-%20SAAP-Assignment-01-Clean.png)
 
 Except for the websocket, the comunication with the GUIs are the same of the Layered architecture (REST API).
+
+## Quality attributes scenarios
+
+Availability:
+    If a user (Source) creates a user already existing (Stimulus) on the system (Artifact) in normal operations (Environment) the system informs the user (Response) with no downtime (Response Measure).
+
+The same as above works with creation of EBikes from the admins.
+
+Consistency:
+    If more users (Source) start riding some bikes (Stimulus) on the system (Artifact) in normal operations (Environment) the users will see the same information about the bikes (Response) at the same time (Response Measure).
+
+Consistency, Scalability:
+    If more users (Source) start riding some bikes (Stimulus) on the system (Artifact) in normal operations (Environment) the information stored will be the same (Response) regardless of how many bikes or users are being modified (Response Measure).
+
+## Fitness functions
+
+There are two fitness functions to test the clean architecture: first, the domain should not depend on application or infrastructure, second, the application should not depend on infrastructure.

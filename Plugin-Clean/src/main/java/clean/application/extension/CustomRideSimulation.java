@@ -1,20 +1,23 @@
-package clean.application.ride;
+package clean.application.extension;
 
+import clean.application.ride.Ride;
 import clean.domain.P2d;
 import clean.domain.V2d;
 import clean.domain.ebike.EBike;
 import clean.domain.ebike.EBikeState;
 import clean.domain.user.User;
 
-class RideSimulation extends Thread {
+class CustomRideSimulation extends Thread {
     private final User user;
     private final EBike bike;
     private boolean stopped;
+	private final Ride ride;
 
-    RideSimulation(User user, EBike bike) {
+    CustomRideSimulation(Ride ride, User user, EBike bike) {
         this.user = user;
         this.bike = bike;
         this.stopped = false;
+		this.ride = ride;
     }
 
     @Override
@@ -26,7 +29,7 @@ class RideSimulation extends Thread {
 
 		var lastTimeChangedDir = System.currentTimeMillis();
 
-        while(!stopped) {
+        while(!stopped && this.bike.getEBikeSnapshot().state() != EBikeState.MAINTENANCE) {
 			this.bike.updateState(EBikeState.IN_USE);
             var location = this.bike.getEBikeSnapshot().location();
             var direction = this.bike.getEBikeSnapshot().direction();
@@ -62,10 +65,11 @@ class RideSimulation extends Thread {
 			}
 
             /* update credit */
-
+			
 			var elapsedTimeSinceLastDecredit = System.currentTimeMillis() - lastTimeDecreasedCredit;
 			if (elapsedTimeSinceLastDecredit > 1000) {
 				this.user.decreaseCredit(1);
+				bike.decreaseBatteryLevel(1);
 				lastTimeDecreasedCredit = System.currentTimeMillis();
 			}
 
@@ -77,7 +81,12 @@ class RideSimulation extends Thread {
 			} catch (Exception ex) {}
         }
 
-		this.bike.updateState(EBikeState.AVAILABLE);
+		if (this.bike.getEBikeSnapshot().state() == EBikeState.IN_USE){
+			this.bike.updateState(EBikeState.AVAILABLE);
+		}
+		else {
+			this.ride.end();
+		}
     }
 
     public void stopSimulation() {
