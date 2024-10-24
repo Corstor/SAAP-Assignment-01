@@ -18,6 +18,10 @@ The admin can load, save and change the electric bikes data.
 
 ## Architecture
 
-The architecture chosen is a clean architecture 
+The architecture chosen is a clean architecture, with the Domain at the center that expose all the ports needed to use it. It should expose one outbound port and one inbound port.
 
-![C&C view of the architecture (without the Database Layer)](imgs/Uni%20-%20SAAP-Assignment-01.png)
+The ride in the Application will use the inbound ports. The stores will use the outbound ports. The verticles need to use both the inbound and outbound port, in order to exchange messages with a user on a websocket (real-time).
+
+![C&C view of the architecture](imgs/Uni%20-%20SAAP-Assignment-01-Clean.png)
+
+Except for the websocket, the comunication with the GUIs are the same of the Layered architecture (REST API).
